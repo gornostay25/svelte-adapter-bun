@@ -1,0 +1,26 @@
+{
+  "name": "svelte-adapter-bun",
+  "version": "0.0.1",
+  "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"test\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gornostay25/svelte-adapter-bun.git"
+  },
+  "keywords": [
+    "svelte",
+    "sveltekit",
+    "sveltekit-adapter",
+    "bun"
+  ],
+  "author": "Volodymyr Palamar <@gornostay25>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gornostay25/svelte-adapter-bun/issues"
+  },
+  "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme"
+}
