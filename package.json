@@ -1,11 +1,24 @@
 {
   "name": "svelte-adapter-bun",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
-  "main": "src/index.js",
+  "main": "index.js",
+  "types": "index.d.ts",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "files",
+    "index.d.ts"
+  ],
   "scripts": {
-    "test": "echo \"test\""
+    "dev": "rimraf files && rollup -cw",
+    "build": "rimraf files && rollup -c"
   },
   "repository": {
     "type": "git",
@@ -22,5 +35,15 @@
   "bugs": {
     "url": "https://github.com/gornostay25/svelte-adapter-bun/issues"
   },
-  "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme"
+  "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^22.0.1",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^13.3.0",
+    "@sveltejs/kit": "^1.0.0-next.367",
+    "bun-types": "^0.1.2",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.76.0",
+    "rollup-plugin-copy": "^3.4.0"
+  }
 }
