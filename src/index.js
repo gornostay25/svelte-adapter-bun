@@ -7,9 +7,9 @@ const port = parseInt(env('PORT', 3000));
 
 console.info(`Listening on ${hostname + ':' + port}`);
 serve({
-    baseURI:env('ORIGIN', undefined),
-    fetch:handler,
+    baseURI: env('ORIGIN', undefined),
+    fetch: handler(build_options.assets ?? true),
     hostname,
     port,
-    development:env("SERVERDEV",build_options.development ?? false)
+    development: env("SERVERDEV", build_options.development ?? false)
 });

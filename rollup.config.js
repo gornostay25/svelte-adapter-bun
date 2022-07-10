@@ -5,23 +5,25 @@ import copy from 'rollup-plugin-copy';
 
 
 export default [{
-		input: {
-			index: 'src/index.js',
-			handler: 'src/handler.js'
-		},
-		output: {
-			dir: 'files',
-			format: 'esm'
-		},
-		plugins: [
-            nodeResolve(), 
-            commonjs(),
-            json(),
-			copy({
-				targets:[
-					{ src:"src/.env.example", dest:"files/" }
-				]
-			})
-		],
-		external: ['bun','SERVER', 'MANIFEST', ...require('module').builtinModules]
+	input: {
+		index: 'src/index.js',
+		// handler: 'src/handler.js',
+		// sirv: "src/sirv.js",
+		"mime.conf": 'src/mime.conf.js'
+	},
+	output: {
+		dir: 'files',
+		format: 'esm'
+	},
+	plugins: [
+		nodeResolve(),
+		commonjs(),
+		json(),
+		copy({
+			targets: [
+				{ src: "src/.env.example", dest: "files/" }
+			]
+		})
+	],
+	external: ['bun', 'SERVER', 'MANIFEST', ...require('module').builtinModules]
 }]

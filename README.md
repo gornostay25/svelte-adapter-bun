@@ -37,25 +37,43 @@ import adapter from 'svelte-adapter-bun';
 export default {
   kit: {
     adapter: adapter({
-      out:"build",
-      envPrefix:"MY_CUSTOM_",
-      development:true,
-      dynamic_origin:true,
-      xff_depth:1
+      out: "build",
+      envPrefix: "MY_CUSTOM_",
+      development: true,
+      // precompress: true,
+      precompress: {
+        brotli: true,
+        gzip: true,
+        files: ["htm", "html"]
+      }
+      dynamic_origin: true,
+      xff_depth: 1
     })
   }
 };
 ```
 
-### **out**
+### out
 
 The directory to build the server to. It defaults to `build` — i.e. `bun build` would start the server locally after it has been created.
 
-<!-- ### precompress
+### precompress
 
-Enables precompressing using gzip and brotli for assets and prerendered pages. It defaults to `false`. -->
+Enables precompressing using gzip and brotli for assets and prerendered pages. It defaults to `false`.
 
-### **envPrefix**
+#### brotli
+
+Enable brotli precompressing. It defaults to `false`.
+
+#### gzip
+
+Enable gzip precompressing. It defaults to `false`.
+
+#### files
+
+file extensions to compress.It defaults to `['html','js','json','css','svg','xml','wasm']`.
+
+### envPrefix
 
 If you need to change the name of the environment variables used to configure the deployment (for example, to deconflict with environment variables you don't control), you can specify a prefix:
 
@@ -70,17 +88,19 @@ MY_CUSTOM_ORIGIN=https://my.site \
 bun build/index.js
 ```
 
-### **development**
+### development
 
 This enables bun's error page. Default: `false`
 
-### **dynamic_origin**
+### dynamic_origin
 
 If enabled use `PROTOCOL_HEADER` `HOST_HEADER` like origin. Default: `false`
 
-### **xff_depth**
+### xff_depth
 
 The default value of XFF_DEPTH if environment is not set. Default: `1`
+
+### assets
 
 ## Environment variables
 
@@ -135,4 +155,4 @@ Instead, we read from the _right_, accounting for the number of trusted proxies.
 
 ## License
 
-[MIT](LICENSE)
+[MIT](LICENSE) © [Volodymyr Palamar](https://github.com/gornostay25)
