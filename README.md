@@ -1,10 +1,10 @@
 # svelte-adapter-bun
 
-[Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/Jarred-Sumner/bun) server.
+[Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
 ## Usage
 
-Install with `npm i -D svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:
+Install with `bun add -d svelte-adapter-bun` or `npm i -D svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:
 
 ```js
 // svelte.config.js
@@ -17,14 +17,14 @@ export default {
 };
 ```
 
-After building the server (`npm run build`), use the following command to start:
+After building the server (`vite build`), use the following command to start:
 
 ```
 # go to build directory
 cd build/
 
 # run Bun
-bun index.js
+bun run start
 ```
 
 ## Options
@@ -38,6 +38,7 @@ export default {
   kit: {
     adapter: adapter({
       out: "build",
+      assets: true,
       envPrefix: "MY_CUSTOM_",
       development: true,
       // precompress: true,
@@ -45,7 +46,7 @@ export default {
         brotli: true,
         gzip: true,
         files: ["htm", "html"]
-      }
+      },
       dynamic_origin: true,
       xff_depth: 1
     })
@@ -55,7 +56,11 @@ export default {
 
 ### out
 
-The directory to build the server to. It defaults to `build` — i.e. `bun build` would start the server locally after it has been created.
+The directory to build the server to. It defaults to `build` — i.e. `bun run start` would start the server locally after it has been created.
+
+### assets
+
+Browse a static assets. Default: `true`
 
 ### precompress
 
@@ -100,9 +105,9 @@ If enabled use `PROTOCOL_HEADER` `HOST_HEADER` like origin. Default: `false`
 
 The default value of XFF_DEPTH if environment is not set. Default: `1`
 
-### assets
-
 ## Environment variables
+
+> Bun automatically reads configuration from `.env.local`, `.env.development` and `.env`
 
 ### `PORT` and `HOST`
 

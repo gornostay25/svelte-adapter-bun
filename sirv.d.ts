@@ -2,10 +2,21 @@
 import type { Stats } from 'fs';
 
 type Arrayable<T> = T | T[];
-export type NextHandler = () => void | Promise<void>;
-export type RequestHandler = (req: RequestHandler, next?: NextHandler) => void;
+type NextHandler = () => void | Promise<void>;
+type RequestHandler = (req: RequestHandler, next?: NextHandler) => Response;
 
-export interface Options {
+interface SirvFiles {
+    [key: string]: SirvData
+}
+
+interface SirvData {
+    abs: string,
+    stats: Stats,
+    headers: Headers
+}
+
+
+interface Options {
     dev?: boolean;
     etag?: boolean;
     maxAge?: number;
@@ -16,6 +27,6 @@ export interface Options {
     dotfiles?: boolean;
     brotli?: boolean;
     gzip?: boolean;
-    onNoMatch?: (req: Request, res: ServerResponse) => void;
+    onNoMatch?: (req: Request) => Response;
     setHeaders?: (headers: Headers, pathname: string, stats: Stats) => Headers;
 }

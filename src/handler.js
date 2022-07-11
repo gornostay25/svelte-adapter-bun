@@ -103,9 +103,8 @@ function ssr(req) {
             return "127.0.0.1";
         },
         platform: {
-            foo() {
-                console.log(this)
-                return "bar";
+            bun() {
+                return "Bun!";
             }
         }
     })

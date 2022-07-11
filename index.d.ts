@@ -1,9 +1,18 @@
 import { Adapter } from '@sveltejs/kit';
-import { Stats } from "fs"
+
 
 declare global {
 	const ENV_PREFIX: string;
 	const BUILD_OPTIONS: BuildOptions;
+}
+
+declare module 'SERVER' {
+	export { Server } from '@sveltejs/kit';
+}
+
+declare module 'MANIFEST' {
+	import { SSRManifest } from '@sveltejs/kit';
+	export const manifest: SSRManifest;
 }
 
 interface BuildOptions {
@@ -31,14 +40,6 @@ interface BuildOptions {
 }
 type BuildOptionsMap = keyof BuildOptions
 
-interface SirvData {
-	abs: string,
-	stats: Stats,
-	headers: Headers
-}
-interface SirvFiles {
-	[key: string]: SirvData
-}
 
 interface MimeTypes {
 	[key: string]: string;

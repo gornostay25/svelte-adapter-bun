@@ -58,11 +58,9 @@ function is404(req) {
 /**
  * 
  * @param {Request} req 
- * @param {string} file 
- * @param {fs.Stats} stats 
- * @param {Headers} headers 
+ * @param {import('../sirv').SirvData} data 
  */
-function send(req, file, stats, headers) {
+function send(req, data) {//file, stats, headers) {
     let code = 200
     // , opts = {};
 
@@ -94,8 +92,8 @@ function send(req, file, stats, headers) {
     //         status: code
     //     })
     // } else {
-    return new Response(Bun.file(file), {
-        headers,
+    return new Response(Bun.file(data.abs), {
+        headers: data.headers,
         status: code
     })
     // }
@@ -151,16 +149,17 @@ export default function (dir, opts = {}) {
     let gzips = opts.gzip && extensions.map(x => `${x}.gz`).concat('gz');
     let brots = opts.brotli && extensions.map(x => `${x}.br`).concat('br');
 
-    /** @type {import('..').SirvFiles} */
+    /** @type {import('../sirv').SirvFiles} */
     const FILES = {};
 
     let fallback = '/';
     let isEtag = !!opts.etag;
-    let isSPA = !!opts.single;
-    if (typeof opts.single === 'string') {
-        let idx = opts.single.lastIndexOf('.');
-        fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
-    }
+    // let isSPA = !!opts.single;
+
+    // if (typeof opts.single === 'string') {
+    //     let idx = opts.single.lastIndexOf('.');
+    //     fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
+    // }
 
     let ignores = [];
     if (opts.ignores !== false) {
@@ -190,7 +189,7 @@ export default function (dir, opts = {}) {
 
     /**
      * @callback lookup
-     * @return { import('..').SirvData }
+     * @return { import('../sirv').SirvData }
      */
     /**@type {lookup} */
     let lookup = opts.dev ? viaLocal.bind(0, dir, isEtag) : viaCache.bind(0, FILES);
@@ -211,7 +210,14 @@ export default function (dir, opts = {}) {
             catch (err) { /* malform uri */ }
         }
 
+        // tmp = lookup(pathname, extns)
+        // if (!tmp) {
+        //     if (isSPA && !isMatch(pathname, ignores)) {
+        //         tmp = lookup(fallback, extns)
+        //     }
+        // }
         let data = lookup(pathname, extns) || isSPA && !isMatch(pathname, ignores) && lookup(fallback, extns);
+
         if (!data) return next ? next() : isNotFound(req);
 
         if (isEtag && req.headers.get('if-none-match') === data.headers.get('ETag')) {
@@ -219,12 +225,12 @@ export default function (dir, opts = {}) {
         }
 
         if (gzips || brots) {
-            data.headers.set('Vary', 'Accept-Encoding');
+            data.headers.append('Vary', 'Accept-Encoding');
         }
 
         if (setHeaders) {
             data.headers = setHeaders(data.headers, pathname, data.stats);
         }
-        return send(req, data.abs, data.stats, data.headers);
+        return send(req, data);
     };
 }

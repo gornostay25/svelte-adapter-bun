@@ -1,4 +1,4 @@
-import { createReadStream, createWriteStream, existsSync, statSync, writeFileSync } from 'fs';
+import { createReadStream, createWriteStream, existsSync, readFileSync, statSync, writeFileSync } from 'fs';
 import { pipeline } from 'stream';
 import glob from 'tiny-glob';
 import { fileURLToPath } from 'url';
@@ -46,8 +46,37 @@ export default function (opts = {}) {
 				await compress(`${out}/client`, precompress);
 				await compress(`${out}/static`, precompress);
 				await compress(`${out}/prerendered`, precompress);
-				builder.log.success("Compression success")
+				builder.log.success("Compression success");
 			}
+
+			let package_data = {
+				"name": "bun-the-best",
+				"version": "0.0.0",
+				"type": "module",
+				"private": true,
+				"main": "index.js",
+				"scripts": {
+					"start": "./index.js"
+				},
+				"dependencies": {}
+			};
+
+			if (process.env.npm_package_json) {
+				try {
+					let packageraw = readFileSync(process.env.npm_package_json, { encoding: "utf-8" });
+					let package_json = JSON.parse(packageraw);
+					package_json.name && (package_data.name = package_json.name);
+					package_json.version && (package_data.version = package_json.version);
+					package_json.dependencies && (package_data.dependencies = package_json.dependencies);
+				} catch (error) {
+					builder.log.warn(`Parse package.json error: ${error.message}`);
+				}
+			}
+
+			writeFileSync(
+				`${out}/package.json`,
+				JSON.stringify(package_data, null, "\t")
+			);
 
 			builder.log.success("Start server with: bun /build/index.js")
 		}
@@ -63,8 +92,8 @@ async function compress(directory, options) {
 		return;
 	}
 
-	
-	let files_ext = options.files ?? ['html','js','json','css','svg','xml','wasm']
+
+	let files_ext = options.files ?? ['html', 'js', 'json', 'css', 'svg', 'xml', 'wasm']
 	const files = await glob(`**/*.{${files_ext.join()}}`, {
 		cwd: directory,
 		dot: true,
