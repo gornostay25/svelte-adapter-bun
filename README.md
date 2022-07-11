@@ -45,7 +45,7 @@ export default {
         brotli: true,
         gzip: true,
         files: ["htm", "html"]
-      }
+      },
       dynamic_origin: true,
       xff_depth: 1
     })
