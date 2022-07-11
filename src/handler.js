@@ -19,7 +19,6 @@ const host_header = env('HOST_HEADER', 'X-Forwarded-Host').toLowerCase();
 
 /** @param {boolean} assets */
 export default function (assets) {
-    /**@param {Request} req */
 
     let handlers = [
         assets && serve(path.join(__dirname, '/client'), true),
@@ -28,6 +27,7 @@ export default function (assets) {
         ssr
     ].filter(Boolean)
 
+    /**@param {Request} req */
     return function handler(req) {
         req.headers; // https://github.com/Jarred-Sumner/bun/issues/489
 

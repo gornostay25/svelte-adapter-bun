@@ -56,7 +56,7 @@ export default function (opts = {}) {
 				"private": true,
 				"main": "index.js",
 				"scripts": {
-					"start": "./index.js"
+					"start": "bun ./index.js"
 				},
 				"dependencies": {}
 			};
