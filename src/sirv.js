@@ -154,12 +154,12 @@ export default function (dir, opts = {}) {
 
     let fallback = '/';
     let isEtag = !!opts.etag;
-    // let isSPA = !!opts.single;
+    let isSPA = !!opts.single;
 
-    // if (typeof opts.single === 'string') {
-    //     let idx = opts.single.lastIndexOf('.');
-    //     fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
-    // }
+    if (typeof opts.single === 'string') {
+        let idx = opts.single.lastIndexOf('.');
+        fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
+    }
 
     let ignores = [];
     if (opts.ignores !== false) {
