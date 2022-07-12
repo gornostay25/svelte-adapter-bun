@@ -27,7 +27,7 @@ export default {
 
 After building the server (`vite build`), use the following command to start:
 
-```
+```shell
 # go to build directory
 cd build/
 
@@ -96,7 +96,7 @@ If you need to change the name of the environment variables used to configure th
 envPrefix: 'MY_CUSTOM_';
 ```
 
-```
+```shell
 MY_CUSTOM_HOST=127.0.0.1 \
 MY_CUSTOM_PORT=4000 \
 MY_CUSTOM_ORIGIN=https://my.site \
@@ -123,7 +123,7 @@ The default value of XFF_DEPTH if environment is not set. Default: `1`
 
 By default, the server will accept connections on `0.0.0.0` using port 3000. These can be customized with the `PORT` and `HOST` environment variables:
 
-```
+```shell
 HOST=127.0.0.1 PORT=4000 bun build/index.js
 ```
 
@@ -131,13 +131,13 @@ HOST=127.0.0.1 PORT=4000 bun build/index.js
 
 HTTP doesn't give SvelteKit a reliable way to know the URL that is currently being requested. The simplest way to tell SvelteKit where the app is being served is to set the `ORIGIN` environment variable:
 
-```
+```shell
 ORIGIN=https://my.site bun build/index.js
 ```
 
 With this, a request for the `/stuff` pathname will correctly resolve to `https://my.site/stuff`. Alternatively, you can specify headers that tell SvelteKit about the request protocol and host, from which it can construct the origin URL:
 
-```
+```shell
 PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host bun build/index.js
 ```
 
@@ -146,7 +146,7 @@ PROTOCOL_HEADER=x-forwarded-proto HOST_HEADER=x-forwarded-host bun build/index.j
 
 The [RequestEvent](https://kit.svelte.dev/docs/types#additional-types-requestevent) object passed to hooks and endpoints includes an `event.clientAddress` property representing the client's IP address. [Bun.js haven't got functionality](https://github.com/Jarred-Sumner/bun/issues/518) to get client's IP address, so SvelteKit will receive `127.0.0.1` or if your server is behind one or more proxies (such as a load balancer), you can get an IP address from headers, so we need to specify an `ADDRESS_HEADER` to read the address from:
 
-```
+```shell
 ADDRESS_HEADER=True-Client-IP bun build/index.js
 ```
 
