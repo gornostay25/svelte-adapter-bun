@@ -1,5 +1,9 @@
 # svelte-adapter-bun
 
+[![Latest Stable Version](https://img.shields.io/npm/v/svelte-adapter-bun.svg)](https://www.npmjs.com/package/svelte-adapter-bun)
+[![License](https://img.shields.io/npm/l/svelte-adapter-bun.svg)](https://www.npmjs.com/package/svelte-adapter-bun)
+[![NPM Downloads](https://img.shields.io/npm/dt/svelte-adapter-bun.svg)](https://www.npmjs.com/package/svelte-adapter-bun)
+
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
 > **Warning**
