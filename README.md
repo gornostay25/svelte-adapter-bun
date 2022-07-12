@@ -86,7 +86,7 @@ Enable gzip precompressing. It defaults to `false`.
 
 #### files
 
-file extensions to compress.It defaults to `['html','js','json','css','svg','xml','wasm']`.
+file extensions to compress. It defaults to `['html','js','json','css','svg','xml','wasm']`.
 
 ### envPrefix
 
