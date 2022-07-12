@@ -5,11 +5,11 @@ import { mimes, lookup as getExt } from "mrmime";
 import { totalist } from "totalist/sync";
 import exmimes from "./mime.conf";
 
-function isMatch(uri, arr) {
-    for (let i = 0; i < arr.length; i++) {
-        if (arr[i].test(uri)) return true;
-    }
-}
+// function isMatch(uri, arr) {
+//     for (let i = 0; i < arr.length; i++) {
+//         if (arr[i].test(uri)) return true;
+//     }
+// }
 
 function toAssume(uri, extns) {
     let i = 0, x, len = uri.length - 1;
@@ -60,44 +60,46 @@ function is404(req) {
  * @param {Request} req 
  * @param {import('../sirv').SirvData} data 
  */
-function send(req, data) {//file, stats, headers) {
-    let code = 200
-    // , opts = {};
+function send(req, data) {
+    let code = 200, opts = {};
 
 
-    // if (req.headers.has("range")) {
-    //     code = 206;
-    //     let [x, y] = req.headers.get("range").replace('bytes=', '').split('-');
-    //     let end = opts.end = parseInt(y, 10) || stats.size - 1;
-    //     let start = opts.start = parseInt(x, 10) || 0;
+    if (req.headers.has("range")) {
+        code = 206;
+        let [x, y] = req.headers.get("range").replace('bytes=', '').split('-');
+        let end = opts.end = parseInt(y, 10) || data.stats.size - 1;
+        let start = opts.start = parseInt(x, 10) || 0;
 
-    //     if (start >= stats.size || end >= stats.size) {
-    //         headers.set('Content-Range', `bytes */${stats.size}`);
-    //         return new Response(null, {
-    //             headers,
-    //             status: 416
-    //         })
-    //     }
+        if (start >= data.stats.size || end >= data.stats.size) {
+            data.headers.set('Content-Range', `bytes */${data.stats.size}`);
+            return new Response(null, {
+                headers: data.headers,
+                status: 416
+            })
+        }
 
-    //     headers.set('Content-Range', `bytes ${start}-${end}/${stats.size}`);
-    //     headers.set('Content-Length', (end - start + 1));
-    //     headers.set('Accept-Ranges', 'bytes');
-    // }
+        data.headers.set('Content-Range', `bytes ${start}-${end}/${data.stats.size}`);
+        data.headers.set('Content-Length', (end - start + 1));
+        data.headers.set('Accept-Ranges', 'bytes');
+        opts.range = true
+    }
 
-    // if (opts.start) {
-    //     console.log("Readable string",opts)
-    //     // let rsReadableStream =
-    //     return new Response(Bun.readableStreamToBlob(fs.createReadStream(file, opts)), {
-    //         headers,
-    //         status: code
-    //     })
-    // } else {
+    if (opts.range) {
+        return new Promise((rs) => {
+            // https://github.com/oven-sh/bun/issues/616
+            Bun.file(data.abs).slice(opts.start, opts.end).arrayBuffer().then(arbf => {
+                return new Response(arbf, {
+                    headers: data.headers,
+                    status: code
+                })
+            }).then(rs).catch(e => (console.error(e), rs(new Response(null, 500))))
+        })
+    }
+
     return new Response(Bun.file(data.abs), {
         headers: data.headers,
         status: code
     })
-    // }
-
 }
 
 const ENCODING = {
@@ -152,14 +154,14 @@ export default function (dir, opts = {}) {
     /** @type {import('../sirv').SirvFiles} */
     const FILES = {};
 
-    let fallback = '/';
+    // let fallback = '/';
     let isEtag = !!opts.etag;
-    let isSPA = !!opts.single;
+    // let isSPA = !!opts.single;
 
-    if (typeof opts.single === 'string') {
-        let idx = opts.single.lastIndexOf('.');
-        fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
-    }
+    // if (typeof opts.single === 'string') {
+    //     let idx = opts.single.lastIndexOf('.');
+    //     fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
+    // }
 
     let ignores = [];
     if (opts.ignores !== false) {
@@ -216,7 +218,8 @@ export default function (dir, opts = {}) {
         //         tmp = lookup(fallback, extns)
         //     }
         // }
-        let data = lookup(pathname, extns) || isSPA && !isMatch(pathname, ignores) && lookup(fallback, extns);
+        let data = lookup(pathname, extns)
+        //  || isSPA && !isMatch(pathname, ignores) && lookup(fallback, extns);
 
         if (!data) return next ? next() : isNotFound(req);
 

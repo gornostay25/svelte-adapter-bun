@@ -2,7 +2,7 @@ import { nodeResolve } from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import copy from 'rollup-plugin-copy';
-
+import cleanup from 'rollup-plugin-cleanup';
 
 export default [{
 	input: {
@@ -23,7 +23,8 @@ export default [{
 			targets: [
 				{ src: "src/.env.example", dest: "files/" }
 			]
-		})
+		}),
+		cleanup()
 	],
 	external: ['bun', 'SERVER', 'MANIFEST', ...require('module').builtinModules]
 }]

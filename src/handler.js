@@ -37,9 +37,7 @@ export default function (assets) {
                 if (i < handlers.length) {
                     return handle(i + 1)
                 } else {
-                    return Response(404, {
-                        status: 404
-                    })
+                    return new Response(404, { status: 404 })
                 }
             });
         }
@@ -54,13 +52,14 @@ function serve(path, client = false) {
             brotli: true,
             setHeaders: client && ((headers, pathname) => {
                 if (pathname.startsWith(`/${manifest.appDir}/immutable/`)) {
-                    headers.set('cache-control', 'public,max-age=31536000,immutable')
-                    return headers
+                    headers.set('cache-control', 'public,max-age=31536000,immutable');
                 }
+                return headers
             })
         })
 }
 
+/**@param {Request} req */
 function ssr(req) {
     let request = req;
     if (build_options.dynamic_origin ?? false) {

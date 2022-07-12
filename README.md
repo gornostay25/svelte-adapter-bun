@@ -2,6 +2,10 @@
 
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
+> **Warning**
+> **This is experimental module!** Bun does not support many things like [`FormData`](https://github.com/oven-sh/bun/issues/621)
+> So I can't promise it will work
+
 ## Usage
 
 Install with `bun add -d svelte-adapter-bun` or `npm i -D svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:
@@ -61,6 +65,8 @@ The directory to build the server to. It defaults to `build` — i.e. `bun run s
 ### assets
 
 Browse a static assets. Default: `true`
+
+ - [X] Support [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests)
 
 ### precompress
 

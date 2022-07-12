@@ -1,6 +1,6 @@
 {
   "name": "svelte-adapter-bun",
-  "version": "0.2.2-2",
+  "version": "0.2.2-3",
   "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
   "main": "index.js",
   "types": "index.d.ts",
@@ -40,11 +40,12 @@
     "@rollup/plugin-commonjs": "^22.0.1",
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
-    "@sveltejs/kit": "^1.0.0-next.367",
-    "bun-types": "^0.1.2",
+    "@sveltejs/kit": "next",
+    "bun-types": "latest",
     "mrmime": "^1.0.1",
     "rimraf": "^3.0.2",
     "rollup": "^2.76.0",
+    "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-copy": "^3.4.0",
     "totalist": "^3.0.0"
   },

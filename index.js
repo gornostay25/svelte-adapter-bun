@@ -78,7 +78,7 @@ export default function (opts = {}) {
 				JSON.stringify(package_data, null, "\t")
 			);
 
-			builder.log.success("Start server with: bun /build/index.js")
+			builder.log.success("Start server with: bun ./build/index.js")
 		}
 	};
 }
