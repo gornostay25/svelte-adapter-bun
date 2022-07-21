@@ -41,10 +41,10 @@
     "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^13.3.0",
     "@sveltejs/kit": "next",
-    "bun-types": "latest",
+    "bun-types": "^0.1.4",
     "mrmime": "^1.0.1",
     "rimraf": "^3.0.2",
-    "rollup": "^2.76.0",
+    "rollup": "^2.77.0",
     "rollup-plugin-cleanup": "^3.2.1",
     "rollup-plugin-copy": "^3.4.0",
     "totalist": "^3.0.0"

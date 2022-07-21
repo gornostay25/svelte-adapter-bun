@@ -22,7 +22,6 @@ export default function (assets) {
 
     let handlers = [
         assets && serve(path.join(__dirname, '/client'), true),
-        assets && serve(path.join(__dirname, '/static')),
         assets && serve(path.join(__dirname, '/prerendered')),
         ssr
     ].filter(Boolean)
