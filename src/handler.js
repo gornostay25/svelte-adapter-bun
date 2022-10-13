@@ -10,6 +10,7 @@ const __dirname = path.dirname(fileURLToPath(new URL(import.meta.url)));
 
 /** @type {import('@sveltejs/kit').Server} */
 const server = new Server(manifest);
+await server.init({ env: process.env });
 
 const xff_depth = parseInt(env('XFF_DEPTH', build_options.xff_depth ?? 1));
 
