@@ -17,8 +17,9 @@
     "index.d.ts"
   ],
   "scripts": {
-    "dev": "rimraf files && rollup -cw",
-    "build": "rimraf files && rollup -c"
+    "build": "rimraf files && node build.js",
+    "lint": "prettier --plugin-search-dir . --check .",
+    "format": "prettier --plugin-search-dir . --write ."
   },
   "repository": {
     "type": "git",
@@ -37,19 +38,16 @@
   },
   "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^22.0.1",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^13.3.0",
-    "@sveltejs/kit": "next",
-    "bun-types": "^0.1.4",
+    "@sveltejs/kit": "^1.1.2",
+    "bun-types": "^0.4.0",
+    "esbuild": "^0.17.2",
     "mrmime": "^1.0.1",
-    "rimraf": "^3.0.2",
-    "rollup": "^2.77.0",
-    "rollup-plugin-cleanup": "^3.2.1",
-    "rollup-plugin-copy": "^3.4.0",
+    "prettier": "^2.8.3",
+    "rimraf": "^4.1.0",
     "totalist": "^3.0.0"
   },
   "dependencies": {
+    "formdata-polyfill": "^4.0.10",
     "tiny-glob": "^0.2.9"
   }
 }
