@@ -32,6 +32,66 @@ cd build/
 bun run start
 ```
 
+## WebSocket Server
+
+https://github.com/oven-sh/bun/blob/main/README.md#websockets-with-bunserve
+
+```js
+// hooks.server.js
+
+import { sequence } from "@sveltejs/kit/hooks";
+
+/** @type {import('@sveltejs/kit').Handle} */
+async function first({ event, resolve }) {
+  console.log("first processing");
+  return resolve(event);
+}
+
+/** @type {import('@sveltejs/kit').Handle} */
+async function second({ event, resolve }) {
+  console.log("second processing");
+  return resolve(event);
+}
+
+const handle = sequence(first, second);
+
+/** @type {WebSocketHandler} */
+handle.handleWebsocket = {
+  open(ws) {
+    console.log("WebSocket opened");
+    // subscribe to "the-group-chat" topic
+    ws.subscribe("the-group-chat");
+    ws.send("Slava Ukraїni");
+  },
+  message(ws, message) {
+    // In a group chat, we want to broadcast to everyone
+    // so we use publish()
+    ws.publish("the-group-chat", `${ws.data.name}: ${message}`);
+  },
+  close(ws, code, reason) {
+    ws.publish("the-group-chat", `${ws.data.name} left the chat`);
+  },
+  drain(ws) {
+    console.log("Please send me data. I am ready to receive it.");
+  },
+  /**
+   * @param {Request} request
+   * @param {Function} upgrade
+   */
+  upgrade(request, upgrade) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/ws")) {
+      return upgrade(request);
+    }
+  },
+
+  // enable compression
+  perMessageDeflate: true,
+};
+
+export { handle };
+```
+
 ## Options
 
 The adapter can be configured with various options:

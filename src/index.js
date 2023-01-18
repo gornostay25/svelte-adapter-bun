@@ -5,11 +5,17 @@ import handler from "./handler.js";
 const hostname = env("HOST", "0.0.0.0");
 const port = parseInt(env("PORT", 3000));
 
-console.info(`Listening on ${hostname + ":" + port}`);
-serve({
+const { httpserver, websocket } = handler(build_options.assets ?? true);
+
+const serverOptions = {
   baseURI: env("ORIGIN", undefined),
-  fetch: handler(build_options.assets ?? true),
+  fetch: httpserver,
   hostname,
   port,
   development: env("SERVERDEV", build_options.development ?? false),
-});
+};
+
+websocket ? (serverOptions.websocket = websocket) : 0;
+
+console.info(`Listening on ${hostname + ":" + port}` + (websocket ? " (Websocket)" : ""));
+serve(serverOptions);

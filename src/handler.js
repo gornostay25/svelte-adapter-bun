@@ -30,9 +30,7 @@ export default function (assets) {
   ].filter(Boolean);
 
   /**@param {Request} req */
-  return function handler(req) {
-    req.headers; // https://github.com/Jarred-Sumner/bun/issues/489
-
+  function handler(req) {
     function handle(i) {
       return handlers[i](req, () => {
         if (i < handlers.length) {
@@ -43,8 +41,35 @@ export default function (assets) {
       });
     }
     return handle(0);
+  }
+
+  function defaultAcceptWebsocket(request, upgrade) {
+    return upgrade(request);
+  }
+
+  if (server.options.hooks.handle.handleWebsocket) {
+    return {
+      httpserver: (req, srv) => {
+        if (
+          req.headers.get("connection")?.toLowerCase() === "upgrade" &&
+          req.headers.get("upgrade")?.toLowerCase() === "websocket"
+        ) {
+          (server.options.hooks.handle.handleWebsocket.upgrade ?? defaultAcceptWebsocket)(
+            req,
+            srv.upgrade.bind(srv)
+          );
+          return;
+        }
+        return handler(req, srv);
+      },
+      websocket: server.options.hooks.handle.handleWebsocket,
+    };
+  }
+  return {
+    httpserver: handler,
   };
 }
+
 function serve(path, client = false) {
   return (
     existsSync(path) &&
