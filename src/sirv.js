@@ -1,5 +1,5 @@
 /*! MIT © Luke Edwards https://github.com/lukeed/sirv/blob/master/packages/sirv/index.js */
-import fs from "fs";
+import { existsSync, statSync, Stats } from "fs";
 import { join, normalize, resolve } from "path";
 import { mimes, lookup as getExt } from "mrmime";
 import { totalist } from "totalist/sync";
@@ -45,8 +45,8 @@ function viaLocal(dir, isEtag, uri, extns) {
   let abs, stats, name, headers;
   for (; i < arr.length; i++) {
     abs = normalize(join(dir, (name = arr[i])));
-    if (abs.startsWith(dir) && fs.existsSync(abs)) {
-      stats = fs.statSync(abs);
+    if (abs.startsWith(dir) && existsSync(abs)) {
+      stats = statSync(abs);
       if (stats.isDirectory()) continue;
       headers = toHeaders(name, stats, isEtag);
       headers.set("Cache-Control", isEtag ? "no-cache" : "no-store");
@@ -110,7 +110,7 @@ const ENCODING = {
 /**
  *
  * @param {string} name
- * @param {fs.Stats} stats
+ * @param {Stats} stats
  * @param {boolean} isEtag
  */
 function toHeaders(name, stats, isEtag) {

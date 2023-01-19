@@ -1,3 +1,4 @@
+/*! MIT © Volodymyr Palamar https://github.com/gornostay25/svelte-adapter-bun */
 import { serve } from "bun";
 import { build_options, env } from "./env.js";
 import handler from "./handler.js";
@@ -13,6 +14,10 @@ const serverOptions = {
   hostname,
   port,
   development: env("SERVERDEV", build_options.development ?? false),
+  error(error) {
+    console.error(error);
+    return new Response("Uh oh!!", { status: 500 });
+  },
 };
 
 websocket ? (serverOptions.websocket = websocket) : 0;

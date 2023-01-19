@@ -5,9 +5,15 @@
 > **Warning** > **This is experimental module!** Bun does not support many things like [`FormData`](https://github.com/oven-sh/bun/issues/621)\*\*
 > So I can't promise it will work
 
-> \*\*Added polyfill for [`FormData`](https://www.npmjs.com/package/formdata-polyfill), you can add your polyfills in `src/polyfills.js` file
+> 🩼 Added polyfill for
+>
+> - [`FormData`](https://www.npmjs.com/package/formdata-polyfill)\*\*
+> - [`Request.prototype.formData`](https://www.npmjs.com/package/parse-multipart-data)
+> - [`File`](https://github.com/oven-sh/bun/issues/621#issuecomment-1396462734)
+>
+> You can add your polyfills in [`src/polyfills.js`](src/polyfills.js) file.
 
-## Usage
+## :zap: Usage
 
 Install with `bun add -d svelte-adapter-bun` or `npm i -D svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:
 
@@ -32,67 +38,7 @@ cd build/
 bun run start
 ```
 
-## WebSocket Server
-
-https://github.com/oven-sh/bun/blob/main/README.md#websockets-with-bunserve
-
-```js
-// hooks.server.js
-
-import { sequence } from "@sveltejs/kit/hooks";
-
-/** @type {import('@sveltejs/kit').Handle} */
-async function first({ event, resolve }) {
-  console.log("first processing");
-  return resolve(event);
-}
-
-/** @type {import('@sveltejs/kit').Handle} */
-async function second({ event, resolve }) {
-  console.log("second processing");
-  return resolve(event);
-}
-
-const handle = sequence(first, second);
-
-/** @type {WebSocketHandler} */
-handle.handleWebsocket = {
-  open(ws) {
-    console.log("WebSocket opened");
-    // subscribe to "the-group-chat" topic
-    ws.subscribe("the-group-chat");
-    ws.send("Slava Ukraїni");
-  },
-  message(ws, message) {
-    // In a group chat, we want to broadcast to everyone
-    // so we use publish()
-    ws.publish("the-group-chat", `${ws.data.name}: ${message}`);
-  },
-  close(ws, code, reason) {
-    ws.publish("the-group-chat", `${ws.data.name} left the chat`);
-  },
-  drain(ws) {
-    console.log("Please send me data. I am ready to receive it.");
-  },
-  /**
-   * @param {Request} request
-   * @param {Function} upgrade
-   */
-  upgrade(request, upgrade) {
-    const url = new URL(request.url);
-    if (url.pathname.startsWith("/ws")) {
-      return upgrade(request);
-    }
-  },
-
-  // enable compression
-  perMessageDeflate: true,
-};
-
-export { handle };
-```
-
-## Options
+## :gear: Options
 
 The adapter can be configured with various options:
 
@@ -172,7 +118,51 @@ If enabled use `PROTOCOL_HEADER` `HOST_HEADER` like origin. Default: `false`
 
 The default value of XFF_DEPTH if environment is not set. Default: `1`
 
-## Environment variables
+## :spider_web: WebSocket Server
+
+https://github.com/oven-sh/bun/blob/main/README.md#websockets-with-bunserve
+
+```js
+// hooks.server.js
+
+import { sequence } from "@sveltejs/kit/hooks";
+
+/** @type {import('@sveltejs/kit').Handle} */
+async function first({ event, resolve }) {
+  console.log("first processing");
+  return resolve(event);
+}
+
+/** @type {import('@sveltejs/kit').Handle} */
+async function second({ event, resolve }) {
+  console.log("second processing");
+  return resolve(event);
+}
+
+const handle = sequence(first, second);
+
+/** @type {WebSocketHandler} */
+handle.websocket = {
+  open(ws) {
+    console.log("WebSocket opened");
+    ws.send("Slava Ukraїni");
+  },
+  /**
+   * @param {Request} request
+   * @param {Function} upgrade
+   */
+  upgrade(request, upgrade) {
+    const url = new URL(request.url);
+    if (url.pathname.startsWith("/ws")) {
+      return upgrade(request);
+    }
+  },
+};
+
+export { handle };
+```
+
+## :desktop_computer: Environment variables
 
 > Bun automatically reads configuration from `.env.local`, `.env.development` and `.env`
 

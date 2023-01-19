@@ -47,14 +47,14 @@ export default function (assets) {
     return upgrade(request);
   }
 
-  if (server.options.hooks.handle.handleWebsocket) {
+  if (server.options.hooks.handle.websocket) {
     return {
       httpserver: (req, srv) => {
         if (
           req.headers.get("connection")?.toLowerCase() === "upgrade" &&
           req.headers.get("upgrade")?.toLowerCase() === "websocket"
         ) {
-          (server.options.hooks.handle.handleWebsocket.upgrade ?? defaultAcceptWebsocket)(
+          (server.options.hooks.handle.websocket.upgrade ?? defaultAcceptWebsocket)(
             req,
             srv.upgrade.bind(srv)
           );
@@ -62,7 +62,7 @@ export default function (assets) {
         }
         return handler(req, srv);
       },
-      websocket: server.options.hooks.handle.handleWebsocket,
+      websocket: server.options.hooks.handle.websocket,
     };
   }
   return {
@@ -134,8 +134,8 @@ function ssr(req) {
       return "127.0.0.1";
     },
     platform: {
-      bun() {
-        return "Bun!";
+      isBun() {
+        return true;
       },
     },
   });
