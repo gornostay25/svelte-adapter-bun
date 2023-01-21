@@ -125,24 +125,8 @@ https://github.com/oven-sh/bun/blob/main/README.md#websockets-with-bunserve
 ```js
 // hooks.server.js
 
-import { sequence } from "@sveltejs/kit/hooks";
-
-/** @type {import('@sveltejs/kit').Handle} */
-async function first({ event, resolve }) {
-  console.log("first processing");
-  return resolve(event);
-}
-
-/** @type {import('@sveltejs/kit').Handle} */
-async function second({ event, resolve }) {
-  console.log("second processing");
-  return resolve(event);
-}
-
-const handle = sequence(first, second);
-
-/** @type {WebSocketHandler} */
-handle.websocket = {
+/** @type {import("svelte-adapter-bun").WebSocketHandler} */
+export const handleWebsocket = {
   open(ws) {
     console.log("WebSocket opened");
     ws.send("Slava Ukraїni");
@@ -158,8 +142,6 @@ handle.websocket = {
     }
   },
 };
-
-export { handle };
 ```
 
 ## :desktop_computer: Environment variables

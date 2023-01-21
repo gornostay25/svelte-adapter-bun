@@ -47,23 +47,25 @@ export default function (assets) {
     return upgrade(request);
   }
 
-  if (server.options.hooks.handle.websocket) {
-    return {
-      httpserver: (req, srv) => {
-        if (
-          req.headers.get("connection")?.toLowerCase() === "upgrade" &&
-          req.headers.get("upgrade")?.toLowerCase() === "websocket"
-        ) {
-          (server.options.hooks.handle.websocket.upgrade ?? defaultAcceptWebsocket)(
-            req,
-            srv.upgrade.bind(srv)
-          );
-          return;
-        }
-        return handler(req, srv);
-      },
-      websocket: server.options.hooks.handle.websocket,
-    };
+  try {
+    const handleWebsocket = server.websocket();
+    if (handleWebsocket) {
+      return {
+        httpserver: (req, srv) => {
+          if (
+            req.headers.get("connection")?.toLowerCase() === "upgrade" &&
+            req.headers.get("upgrade")?.toLowerCase() === "websocket"
+          ) {
+            (handleWebsocket.upgrade ?? defaultAcceptWebsocket)(req, srv.upgrade.bind(srv));
+            return;
+          }
+          return handler(req, srv);
+        },
+        websocket: handleWebsocket,
+      };
+    }
+  } catch (e) {
+    console.warn("Fail: websocket handler error:", e);
   }
   return {
     httpserver: handler,

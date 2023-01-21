@@ -37,6 +37,9 @@ export default function (opts = {}) {
       builder.writeServer(`${out}/server`);
       builder.writePrerendered(`${out}/prerendered`);
 
+      builder.log.minor("Patching server (websocket support)");
+      patchServerWebsocketHandler(out);
+
       writeFileSync(
         `${out}/manifest.js`,
         `export const manifest = ${builder.generateManifest({
@@ -147,4 +150,20 @@ async function compress_file(file, format = "gz") {
   const destination = createWriteStream(`${file}.${format}`);
 
   await pipe(source, compress, destination);
+}
+
+/**
+ * @param {string} out
+ */
+function patchServerWebsocketHandler(out) {
+  let src = readFileSync(`${out}/server/index.js`, "utf8");
+  const regex_gethook = /(this\.#options\.hooks\s+=\s+{)\s+(handle:)/gm;
+  const substr_gethook = `$1 \nhandleWebsocket: module.handleWebsocket || null,\n$2`;
+  const result1 = src.replace(regex_gethook, substr_gethook);
+
+  const regex_sethook = /(this\.#options\s+=\s+options;)/gm;
+  const substr_sethook = `$1\nthis.websocket = ()=>this.#options.hooks.handleWebsocket;`;
+  const result = result1.replace(regex_sethook, substr_sethook);
+
+  writeFileSync(`${out}/server/index.js`, result, "utf8");
 }
