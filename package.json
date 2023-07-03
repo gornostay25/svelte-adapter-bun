@@ -38,15 +38,15 @@
   },
   "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
   "devDependencies": {
-    "@sveltejs/kit": "^1.1.4",
-    "bun-types": "^0.5.0",
-    "esbuild": "^0.17.3",
+    "@sveltejs/kit": "^1.21.0",
+    "bun-types": "^0.5.8",
+    "esbuild": "^0.17.19",
     "formdata-polyfill": "^4.0.10",
     "mrmime": "^1.0.1",
     "parse-multipart-data": "^1.5.0",
-    "prettier": "^2.8.3",
-    "rimraf": "^4.1.1",
-    "totalist": "^3.0.0"
+    "prettier": "^2.8.8",
+    "rimraf": "^4.4.1",
+    "totalist": "^3.0.1"
   },
   "dependencies": {
     "tiny-glob": "^0.2.9"

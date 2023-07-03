@@ -2,13 +2,11 @@
 
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
-> **Warning** > **This is experimental module!** Bun does not support many things like [`FormData`](https://github.com/oven-sh/bun/issues/621)\*\*
+> **Warning** > **This is experimental module!** Bun does not support many things.
 > So I can't promise it will work
 
 > 🩼 Added polyfill for
 >
-> - [`FormData`](https://www.npmjs.com/package/formdata-polyfill)\*\*
-> - [`Request.prototype.formData`](https://www.npmjs.com/package/parse-multipart-data)
 > - [`File`](https://github.com/oven-sh/bun/issues/621#issuecomment-1396462734)
 >
 > You can add your polyfills in [`src/polyfills.js`](src/polyfills.js) file.
@@ -120,7 +118,7 @@ The default value of XFF_DEPTH if environment is not set. Default: `1`
 
 ## :spider_web: WebSocket Server
 
-https://github.com/oven-sh/bun/blob/main/README.md#websockets-with-bunserve
+https://bun.sh/docs/api/websockets
 
 ```js
 // hooks.server.js

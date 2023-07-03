@@ -74,7 +74,7 @@ export default function (opts = {}) {
         scripts: {
           start: "bun ./index.js",
         },
-        dependencies: {},
+        dependencies: { cookie: "latest", devalue: "latest", "set-cookie-parser": "latest" },
       };
 
       if (process.env.npm_package_json) {
@@ -83,7 +83,11 @@ export default function (opts = {}) {
           let package_json = JSON.parse(packageraw);
           package_json.name && (package_data.name = package_json.name);
           package_json.version && (package_data.version = package_json.version);
-          package_json.dependencies && (package_data.dependencies = package_json.dependencies);
+          package_json.dependencies &&
+            (package_data.dependencies = {
+              ...package_json.dependencies,
+              ...package_data.dependencies,
+            });
         } catch (error) {
           builder.log.warn(`Parse package.json error: ${error.message}`);
         }
