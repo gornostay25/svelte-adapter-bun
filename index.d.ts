@@ -261,7 +261,7 @@ interface ServerWebSocket<T = undefined> {
   publish(
     topic: string,
     data: string | ArrayBufferView | ArrayBuffer,
-    compress?: boolean
+    compress?: boolean,
   ): ServerWebSocketSendStatus;
 
   /**
@@ -460,8 +460,8 @@ export interface WebSocketHandler<T = undefined> {
          * This value is passed to the {@link ServerWebSocket.data} property
          */
         data?: T;
-      }
-    ) => boolean
+      },
+    ) => boolean,
   ) => boolean;
   /**
    * Handle an incoming message to a {@link ServerWebSocket}

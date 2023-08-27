@@ -17,9 +17,9 @@
     "index.d.ts"
   ],
   "scripts": {
-    "build": "rimraf files && node build.js",
-    "lint": "prettier --plugin-search-dir . --check .",
-    "format": "prettier --plugin-search-dir . --write ."
+    "build": "rimraf files && bun run build.js",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
   },
   "repository": {
     "type": "git",
@@ -38,14 +38,11 @@
   },
   "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
   "devDependencies": {
-    "@sveltejs/kit": "^1.21.0",
-    "bun-types": "^0.5.8",
-    "esbuild": "^0.17.19",
-    "formdata-polyfill": "^4.0.10",
+    "@sveltejs/kit": "^1.23.0",
+    "bun-types": "^0.8.1",
     "mrmime": "^1.0.1",
-    "parse-multipart-data": "^1.5.0",
-    "prettier": "^2.8.8",
-    "rimraf": "^4.4.1",
+    "prettier": "^3.0.2",
+    "rimraf": "^5.0.1",
     "totalist": "^3.0.1"
   },
   "dependencies": {

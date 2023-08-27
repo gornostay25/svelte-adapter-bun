@@ -1,10 +1,10 @@
 {
-  "semi": true,
-  "trailingComma": "es5",
-  "useTabs": false,
-  "bracketSpacing": true,
-  "bracketSameLine": true,
   "arrowParens": "avoid",
+  "bracketSameLine": true,
+  "bracketSpacing": true,
   "endOfLine": "lf",
-  "printWidth": 100
+  "printWidth": 100,
+  "semi": true,
+  "trailingComma": "all",
+  "useTabs": false
 }

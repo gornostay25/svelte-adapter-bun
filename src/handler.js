@@ -105,7 +105,7 @@ function ssr(req) {
     throw new Error(
       `Address header was specified with ${
         ENV_PREFIX + "ADDRESS_HEADER"
-      }=${address_header} but is absent from request`
+      }=${address_header} but is absent from request`,
     );
   }
 
@@ -125,7 +125,7 @@ function ssr(req) {
             throw new Error(
               `${ENV_PREFIX + "XFF_DEPTH"} is ${xff_depth}, but only found ${
                 addresses.length
-              } addresses`
+              } addresses`,
             );
           }
           return addresses[addresses.length - xff_depth].trim();

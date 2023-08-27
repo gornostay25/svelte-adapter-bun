@@ -2,18 +2,9 @@
 
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
-> **Warning** > **This is experimental module!** Bun does not support many things.
-> So I can't promise it will work
-
-> 🩼 Added polyfill for
->
-> - [`File`](https://github.com/oven-sh/bun/issues/621#issuecomment-1396462734)
->
-> You can add your polyfills in [`src/polyfills.js`](src/polyfills.js) file.
-
 ## :zap: Usage
 
-Install with `bun add -d svelte-adapter-bun` or `npm i -D svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:
+Install with `bun add -d svelte-adapter-bun`, then add the adapter to your `svelte.config.js`:
 
 ```js
 // svelte.config.js
@@ -139,6 +130,22 @@ export const handleWebsocket = {
       return upgrade(request);
     }
   },
+};
+```
+
+## Polyfills
+
+If you need to use polyfills in your app, you can add them to the [`src/polyfills.js`](src/polyfills.js) file:
+
+```js
+class Polifill {
+  constructor() {
+    ...
+  }
+}
+
+const globals = {
+  Polifill,
 };
 ```
 

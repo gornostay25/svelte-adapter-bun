@@ -31,21 +31,33 @@ export default function (opts = {}) {
     name: "svelte-adapter-bun",
     async adapt(builder) {
       builder.rimraf(out);
+      builder.mkdirp(out);
 
       builder.log.minor("Copying assets");
-      builder.writeClient(`${out}/client`);
-      builder.writeServer(`${out}/server`);
-      builder.writePrerendered(`${out}/prerendered`);
+      builder.writeClient(`${out}/client${builder.config.kit.paths.base}`);
+      builder.writePrerendered(`${out}/prerendered${builder.config.kit.paths.base}`);
 
-      builder.log.minor("Patching server (websocket support)");
-      patchServerWebsocketHandler(out);
+      if (precompress) {
+        builder.log.minor("Compressing assets");
+        await Promise.all([
+          compress(`${out}/client`, precompress),
+          compress(`${out}/prerendered`, precompress),
+        ]);
+      }
+
+      builder.log.minor("Building server");
+      builder.writeServer(`${out}/server`);
 
       writeFileSync(
         `${out}/manifest.js`,
-        `export const manifest = ${builder.generateManifest({
-          relativePath: "./server",
-        })};\n`
+        `export const manifest = ${builder.generateManifest({ relativePath: "./server" })};\n\n` +
+          `export const prerendered = new Set(${JSON.stringify(builder.prerendered.paths)});\n`,
       );
+
+      builder.log.minor("Patching server (websocket support)");
+      patchServerWebsocketHandler(`${out}/server`);
+
+      const pkg = JSON.parse(readFileSync("package.json", "utf8"));
 
       builder.copy(files, out, {
         replace: {
@@ -56,14 +68,6 @@ export default function (opts = {}) {
           BUILD_OPTIONS: JSON.stringify({ development, dynamic_origin, xff_depth, assets }),
         },
       });
-
-      if (precompress) {
-        builder.log.minor("Compressing assets");
-        await compress(`${out}/client`, precompress);
-        await compress(`${out}/static`, precompress);
-        await compress(`${out}/prerendered`, precompress);
-        builder.log.success("Compression success");
-      }
 
       let package_data = {
         name: "bun-sveltekit-app",
@@ -77,20 +81,16 @@ export default function (opts = {}) {
         dependencies: { cookie: "latest", devalue: "latest", "set-cookie-parser": "latest" },
       };
 
-      if (process.env.npm_package_json) {
-        try {
-          let packageraw = readFileSync(process.env.npm_package_json, { encoding: "utf-8" });
-          let package_json = JSON.parse(packageraw);
-          package_json.name && (package_data.name = package_json.name);
-          package_json.version && (package_data.version = package_json.version);
-          package_json.dependencies &&
-            (package_data.dependencies = {
-              ...package_json.dependencies,
-              ...package_data.dependencies,
-            });
-        } catch (error) {
-          builder.log.warn(`Parse package.json error: ${error.message}`);
-        }
+      try {
+        pkg.name && (package_data.name = pkg.name);
+        pkg.version && (package_data.version = pkg.version);
+        pkg.dependencies &&
+          (package_data.dependencies = {
+            ...pkg.dependencies,
+            ...package_data.dependencies,
+          });
+      } catch (error) {
+        builder.log.warn(`Parse package.json error: ${error.message}`);
       }
 
       writeFileSync(`${out}/package.json`, JSON.stringify(package_data, null, "\t"));
@@ -129,8 +129,8 @@ async function compress(directory, options) {
 
   await Promise.all(
     files.map(file =>
-      Promise.all([doGz && compress_file(file, "gz"), doBr && compress_file(file, "br")])
-    )
+      Promise.all([doGz && compress_file(file, "gz"), doBr && compress_file(file, "br")]),
+    ),
   );
 }
 
@@ -160,7 +160,7 @@ async function compress_file(file, format = "gz") {
  * @param {string} out
  */
 function patchServerWebsocketHandler(out) {
-  let src = readFileSync(`${out}/server/index.js`, "utf8");
+  let src = readFileSync(`${out}/index.js`, "utf8");
   const regex_gethook = /(this\.#options\.hooks\s+=\s+{)\s+(handle:)/gm;
   const substr_gethook = `$1 \nhandleWebsocket: module.handleWebsocket || null,\n$2`;
   const result1 = src.replace(regex_gethook, substr_gethook);
@@ -169,5 +169,5 @@ function patchServerWebsocketHandler(out) {
   const substr_sethook = `$1\nthis.websocket = ()=>this.#options.hooks.handleWebsocket;`;
   const result = result1.replace(regex_sethook, substr_sethook);
 
-  writeFileSync(`${out}/server/index.js`, result, "utf8");
+  writeFileSync(`${out}/index.js`, result, "utf8");
 }

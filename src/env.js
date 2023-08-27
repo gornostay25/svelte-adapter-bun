@@ -16,7 +16,7 @@ if (ENV_PREFIX) {
       const unprefixed = name.slice(ENV_PREFIX.length);
       if (!expected.has(unprefixed)) {
         throw new Error(
-          `You should change envPrefix (${ENV_PREFIX}) to avoid conflicts with existing environment variables — unexpectedly saw ${name}`
+          `You should change envPrefix (${ENV_PREFIX}) to avoid conflicts with existing environment variables — unexpectedly saw ${name}`,
         );
       }
     }
