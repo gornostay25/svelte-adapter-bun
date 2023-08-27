@@ -19,6 +19,10 @@ const globals = {
 };
 export default function installPolyfills() {
   for (const name in globals) {
+    let descriptor = Object.getOwnPropertyDescriptor(globalThis, name);
+    if (descriptor && !descriptor.configurable) {
+      continue;
+    }
     Object.defineProperty(globalThis, name, {
       enumerable: true,
       configurable: true,
