@@ -231,6 +231,12 @@ export default function (dir, opts = {}) {
       return new Response(null, { status: 304 });
     }
 
+    data = {
+      ...data,
+      // clone a new headers to prevent the cached one getting modified
+      headers: new Headers(data.headers)
+    }
+
     if (gzips || brots) {
       data.headers.append("Vary", "Accept-Encoding");
     }
