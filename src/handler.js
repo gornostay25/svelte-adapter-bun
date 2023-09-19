@@ -53,7 +53,7 @@ export default function (assets) {
       return {
         httpserver: (req, srv) => {
           if (
-            req.headers.get("connection")?.toLowerCase() === "upgrade" &&
+            req.headers.get("connection")?.toLowerCase().includes("upgrade") &&
             req.headers.get("upgrade")?.toLowerCase() === "websocket"
           ) {
             (handleWebsocket.upgrade ?? defaultAcceptWebsocket)(req, srv.upgrade.bind(srv));
