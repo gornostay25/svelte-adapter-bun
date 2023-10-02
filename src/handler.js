@@ -16,6 +16,7 @@ const server = new Server(manifest);
 await server.init({ env: (Bun || process).env });
 
 const xff_depth = parseInt(env("XFF_DEPTH", build_options.xff_depth ?? 1));
+const origin = env('ORIGIN', undefined);
 
 const address_header = env("ADDRESS_HEADER", "").toLowerCase();
 const protocol_header = env("PROTOCOL_HEADER", "X-Forwarded-Proto").toLowerCase();
@@ -97,8 +98,8 @@ function ssr(req) {
   if (build_options.dynamic_origin ?? false) {
     let url = req.url;
     let path = url.slice(url.split("/", 3).join("/").length);
-    let origin = get_origin(req.headers);
-    request = new Request(origin + path, req);
+    let base = origin || get_origin(req.headers);
+    request = new Request(base + path, req);
   }
 
   if (address_header && !request.headers.has(address_header)) {
