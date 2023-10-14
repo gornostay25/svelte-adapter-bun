@@ -1,42 +1,42 @@
 {
-  "name": "e2e",
-  "version": "0.0.1",
-  "private": true,
-  "scripts": {
-    "dev": "vite dev --port 3000",
-    "build": "vite build",
-    "preview": "vite preview --port 3000",
-    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
-    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "lint": "prettier --plugin-search-dir . --check . && eslint .",
-    "format": "prettier --plugin-search-dir . --write .",
-    "test:integration": "playwright test",
-    "test:unit": "vitest",
-    "build-and-run": "bun run build && bun ./build/index.js",
-    "test": "bun run test:prod && bun run test:dev",
-    "test:dev": "TEST_SERVER=dev playwright test --retries=0",
-    "test:prod": "TEST_SERVER=prod playwright test --retries=0"
-  },
-  "devDependencies": {
-    "@playwright/test": "^1.28.1",
-    "@sveltejs/adapter-auto": "^2.0.0",
-    "@sveltejs/kit": "^1.20.4",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
-    "eslint": "^8.28.0",
-    "eslint-config-prettier": "^8.5.0",
-    "eslint-plugin-svelte": "^2.30.0",
-    "prettier": "^2.8.0",
-    "prettier-plugin-svelte": "^2.10.1",
-    "svelte": "^4.0.5",
-    "svelte-check": "^3.4.3",
-    "tslib": "^2.4.1",
-    "typescript": "^5.0.0",
-    "vite": "^4.4.2",
-    "vitest": "^0.32.2"
-  },
-  "type": "module",
-  "dependencies": {
-    "svelte-adapter-bun": "../.."
-  }
+	"name": "e2e",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"dev": "concurrently --kill-others \"bun run dev-vite\" \"bun run dev-helper\"",
+		"dev-helper": "bun run --watch ./bunServer.ts",
+		"dev-vite": "vite dev --port 3000",
+		"build": "vite build",
+		"start": "bun ./build/index.js",
+		"build-and-run": "vite build && bun ./build/index.js",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --plugin-search-dir . --check . && eslint .",
+		"format": "prettier --plugin-search-dir . --write .",
+		"test": "echo \"DEV test\" && bun run test:dev && echo \"BUILD test\" && bun run test:build",
+		"test:dev": "RUN_COMMAND=\"bun run dev\" playwright test --retries=0",
+		"test:build": "RUN_COMMAND=\"bun run build && bun ./build/index.js\" playwright test --retries=0"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.28.1",
+		"@sveltejs/adapter-auto": "^2.0.0",
+		"@sveltejs/kit": "^1.20.4",
+		"@typescript-eslint/eslint-plugin": "^6.0.0",
+		"@typescript-eslint/parser": "^6.0.0",
+		"eslint": "^8.28.0",
+		"eslint-config-prettier": "^8.5.0",
+		"eslint-plugin-svelte": "^2.30.0",
+		"prettier": "^2.8.0",
+		"prettier-plugin-svelte": "^2.10.1",
+		"svelte": "^4.0.5",
+		"svelte-check": "^3.4.3",
+		"tslib": "^2.4.1",
+		"typescript": "^5.0.0",
+		"vite": "^4.4.2",
+		"vitest": "^0.32.2"
+	},
+	"type": "module",
+	"dependencies": {
+		"svelte-adapter-bun": "latest"
+	}
 }

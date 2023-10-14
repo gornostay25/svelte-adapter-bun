@@ -1,16 +1,14 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
-const isDevServer = process.env.TEST_SERVER || 'dev';
 
-//
-
-const command = isDevServer == 'dev' ? 'bun run dev' : 'bun run build && bun ./build/index.js';
+// const command = process.env.SERVER_COMMAND;
+const command = "concurrently --kill-others \"bun run dev\" \"bun run dev-helper\"";
 
 const config: PlaywrightTestConfig = {
 	webServer: {
 		command,
 		port: 3000,
-		stdout: 'pipe',
+		stdout: 'ignore',
 		stderr: 'pipe'
 	},
 	use: {

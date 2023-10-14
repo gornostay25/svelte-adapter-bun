@@ -1,10 +1,14 @@
 # Example + e2e test
 
+## How to use
 
+ - to dev use `bun run dev`
+ - to build use `bun run build`
+ - to start built server use `bun run start`
 
-to run production test do `bun run test:prod`
+## How to test
 
-to run dev test do `bun run test:dev`
+ - to run both tests use `bun run test`
+ - to run production test do `bun run test:build`
+ - to run dev test do `bun run test:dev`
 
-
-to run both use `bun run test`
