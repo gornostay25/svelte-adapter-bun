@@ -1,10 +1,22 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
-const isDevServer = process.env.TEST_SERVER || 'dev';
 
-//
+let command = '';
 
-const command = isDevServer == 'dev' ? 'bun run dev' : 'bun run build && bun ./build/index.js';
+switch (process.env.TEST_SERVER) {
+	case 'dev':
+		command = 'bun run dev';
+		break;
+	case 'prod':
+		command = 'bun run build && bun ./build/index.js';
+		break;
+	case 'dev-working':
+		command = 'bun run dev2 & bun run dev';
+		break;
+
+	default:
+		throw new Error(`unknown command ${process.env.TEST_SERVER}`);
+}
 
 const config: PlaywrightTestConfig = {
 	webServer: {

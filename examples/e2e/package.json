@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "vite dev --port 3000",
+    "dev2": "bun run --watch ./bunServer.ts",
     "build": "vite build",
     "preview": "vite preview --port 3000",
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
@@ -13,8 +14,9 @@
     "test:integration": "playwright test",
     "test:unit": "vitest",
     "build-and-run": "bun run build && bun ./build/index.js",
-    "test": "bun run test:prod && bun run test:dev",
+    "test": "bun run test:dev:working && bun run test:prod",
     "test:dev": "TEST_SERVER=dev playwright test --retries=0",
+    "test:dev:working": "TEST_SERVER=dev-working playwright test --retries=0",
     "test:prod": "TEST_SERVER=prod playwright test --retries=0"
   },
   "devDependencies": {
@@ -37,6 +39,6 @@
   },
   "type": "module",
   "dependencies": {
-    "svelte-adapter-bun": "../.."
+    "svelte-adapter-bun": "latest"
   }
 }
