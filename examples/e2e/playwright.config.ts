@@ -1,28 +1,14 @@
 import type { PlaywrightTestConfig } from '@playwright/test';
 import { devices } from '@playwright/test';
 
-let command = '';
-
-switch (process.env.TEST_SERVER) {
-	case 'dev':
-		command = 'bun run dev';
-		break;
-	case 'prod':
-		command = 'bun run build && bun ./build/index.js';
-		break;
-	case 'dev-working':
-		command = 'bun run dev2 & bun run dev';
-		break;
-
-	default:
-		throw new Error(`unknown command ${process.env.TEST_SERVER}`);
-}
+// const command = process.env.SERVER_COMMAND;
+const command = "concurrently --kill-others \"bun run dev\" \"bun run dev-helper\"";
 
 const config: PlaywrightTestConfig = {
 	webServer: {
 		command,
 		port: 3000,
-		stdout: 'pipe',
+		stdout: 'ignore',
 		stderr: 'pipe'
 	},
 	use: {
