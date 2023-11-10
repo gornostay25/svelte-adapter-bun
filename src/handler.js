@@ -148,7 +148,7 @@ function ssr(req) {
  */
 function get_origin(headers) {
   const protocol = (protocol_header && headers.get(protocol_header)) || "https";
-  host_header = host_header !== '' ? host_header: "host";
+  host_header = host_header || "host";
   const host = headers.get(host_header);
   return `${protocol}://${host}`;
 }
