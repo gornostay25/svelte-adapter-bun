@@ -20,7 +20,7 @@ const origin = env('ORIGIN', undefined);
 
 const address_header = env("ADDRESS_HEADER", "").toLowerCase();
 const protocol_header = env("PROTOCOL_HEADER", "").toLowerCase();
-const host_header = env("HOST_HEADER", "").toLowerCase();
+const host_header = env("HOST_HEADER", "Host").toLowerCase();
 
 /** @param {boolean} assets */
 export default function (assets) {
@@ -148,7 +148,6 @@ function ssr(req) {
  */
 function get_origin(headers) {
   const protocol = (protocol_header && headers.get(protocol_header)) || "https";
-  host_header = host_header || "host";
   const host = headers.get(host_header);
   return `${protocol}://${host}`;
 }
