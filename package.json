@@ -39,10 +39,10 @@
   },
   "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
   "devDependencies": {
-    "@sveltejs/kit": "^1.27.3",
-    "bun-types": "^1.0.9",
-    "mrmime": "^1.0.1",
-    "prettier": "^3.0.3",
+    "@sveltejs/kit": "^1.30.4",
+    "bun-types": "latest",
+    "mrmime": "^2.0.0",
+    "prettier": "^3.2.5",
     "totalist": "^3.0.1"
   },
   "dependencies": {
