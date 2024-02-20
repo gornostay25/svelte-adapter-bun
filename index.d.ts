@@ -462,7 +462,7 @@ export interface WebSocketHandler<T = undefined> {
         data?: T;
       },
     ) => boolean,
-  ) => boolean;
+  ) => boolean | Promise<boolean>;
   /**
    * Handle an incoming message to a {@link ServerWebSocket}
    *
