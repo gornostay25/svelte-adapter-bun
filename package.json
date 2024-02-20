@@ -18,6 +18,7 @@
   ],
   "scripts": {
     "build": "rm -fr files && bun run build.js",
+    "prepare": "bun run build",
     "lint": "prettier --check .",
     "format": "prettier --write ."
   },
