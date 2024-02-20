@@ -16,11 +16,11 @@ const server = new Server(manifest);
 await server.init({ env: (Bun || process).env });
 
 const xff_depth = parseInt(env("XFF_DEPTH", build_options.xff_depth ?? 1));
-const origin = env('ORIGIN', undefined);
+const origin = env("ORIGIN", undefined);
 
 const address_header = env("ADDRESS_HEADER", "").toLowerCase();
 const protocol_header = env("PROTOCOL_HEADER", "").toLowerCase();
-const host_header = env("HOST_HEADER", "").toLowerCase();
+const host_header = env("HOST_HEADER", "host").toLowerCase();
 
 /** @param {boolean} assets */
 export default function (assets) {
@@ -92,13 +92,26 @@ function serve(path, client = false) {
   );
 }
 
-/**@param {Request} req */
-function ssr(req) {
-  let request = req;
-  let url = req.url;
-  let path = url.slice(url.split("/", 3).join("/").length);
-  let base = origin || get_origin(req.headers);
-  request = new Request(base + path, req);
+/**@param {Request} request */
+function ssr(request) {
+  if (origin) {
+    const requestOrigin = get_origin(request.headers);
+    if (origin !== requestOrigin) {
+      const url = request.url.slice(request.url.split("/", 3).join("/").length);
+      request = new Request(origin + url, {
+        method: request.method,
+        headers: request.headers,
+        body: request.body,
+        referrer: request.referrer,
+        referrerPolicy: request.referrerPolicy,
+        mode: request.mode,
+        credentials: request.credentials,
+        cache: request.cache,
+        redirect: request.redirect,
+        integrity: request.integrity,
+      });
+    }
+  }
 
   if (address_header && !request.headers.has(address_header)) {
     throw new Error(
