@@ -1,4 +1,5 @@
 import { Adapter } from "@sveltejs/kit";
+import { Server } from "bun";
 
 declare global {
   const ENV_PREFIX: string;
@@ -447,22 +448,7 @@ type WebSocketCompressor =
  * });
  */
 export interface WebSocketHandler<T = undefined> {
-  upgrade: (
-    request: Request,
-    upgrade: (
-      request: Request,
-      options?: {
-        /**
-         * Send any additional headers while upgrading, like cookies
-         */
-        headers?: HeadersInit;
-        /**
-         * This value is passed to the {@link ServerWebSocket.data} property
-         */
-        data?: T;
-      },
-    ) => boolean,
-  ) => boolean | Promise<boolean>;
+  upgrade: (request: Request, server: Server) => boolean | Promise<boolean>;
   /**
    * Handle an incoming message to a {@link ServerWebSocket}
    *

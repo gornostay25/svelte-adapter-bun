@@ -44,8 +44,8 @@ export default function (assets) {
     return handle(0);
   }
 
-  function defaultAcceptWebsocket(request, upgrade) {
-    return upgrade(request);
+  function defaultAcceptWebsocket(request, server) {
+    return server.upgrade(request);
   }
 
   try {
@@ -57,7 +57,7 @@ export default function (assets) {
             req.headers.get("connection")?.toLowerCase().includes("upgrade") &&
             req.headers.get("upgrade")?.toLowerCase() === "websocket"
           ) {
-            await (handleWebsocket.upgrade ?? defaultAcceptWebsocket)(req, srv.upgrade.bind(srv));
+            await (handleWebsocket.upgrade ?? defaultAcceptWebsocket)(req, srv);
             return;
           }
           return handler(req, srv);
