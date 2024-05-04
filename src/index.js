@@ -10,6 +10,7 @@ const { httpserver, websocket } = handler(build_options.assets ?? true);
 
 const serverOptions = {
   baseURI: env("ORIGIN", undefined),
+  maxRequestBodySize: parseInt(env("BODY_SIZE_LIMIT", 1024 * 1024 * 128)), // 128 MB (Bun.serve default)
   fetch: httpserver,
   hostname,
   port,
