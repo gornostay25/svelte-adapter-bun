@@ -5,12 +5,13 @@ import handler from "./handler.js";
 
 const hostname = env("HOST", "0.0.0.0");
 const port = parseInt(env("PORT", 3000));
+const maxRequestBodySize = parseInt(env("BODY_SIZE_LIMIT", undefined));
 
 const { httpserver, websocket } = handler(build_options.assets ?? true);
 
 const serverOptions = {
   baseURI: env("ORIGIN", undefined),
-  maxRequestBodySize: parseInt(env("BODY_SIZE_LIMIT", 1024 * 1024 * 128)), // 128 MB (Bun.serve default)
+  maxRequestBodySize: isNaN(maxRequestBodySize) ? undefined : maxRequestBodySize,
   fetch: httpserver,
   hostname,
   port,
