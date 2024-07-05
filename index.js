@@ -26,6 +26,8 @@ export default function (opts = {}) {
     dynamic_origin = false,
     xff_depth = 1,
     assets = true,
+    prestart = "",
+    poststart = "",
   } = opts;
   return {
     name: "svelte-adapter-bun",
@@ -76,6 +78,8 @@ export default function (opts = {}) {
         private: true,
         main: "index.js",
         scripts: {
+          prestart: prestart,
+          poststart: poststart,
           start: "bun ./index.js",
         },
         dependencies: { cookie: "latest", devalue: "latest", "set-cookie-parser": "latest" },

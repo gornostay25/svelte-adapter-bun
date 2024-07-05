@@ -49,6 +49,8 @@ export default {
       },
       dynamic_origin: true,
       xff_depth: 1,
+      prestart: "",
+      poststart: "",
     }),
   },
 };
@@ -106,6 +108,14 @@ If enabled use `PROTOCOL_HEADER` `HOST_HEADER` like origin. Default: `false`
 ### xff_depth
 
 The default value of XFF_DEPTH if environment is not set. Default: `1`
+
+### prestart
+
+`prestart` script field that will be added to built `package.json`. Default: `""`
+
+### postart
+
+`poststart` script field that will be added to built `package.json`. Default: `""`
 
 ## :spider_web: WebSocket Server
 

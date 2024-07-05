@@ -78,6 +78,19 @@ interface AdapterOptions extends BuildOptions {
    * @default ''
    */
   envPrefix?: string;
+
+  /**
+   * If you need to add a `prestart` script to the `package.json` of the build folder, you can specify it here.
+   * @default ''
+   */
+  prestart?: string;
+
+  /**
+   * If you need to add a `postscript` script to the `package.json` of the build folder, you can specify it here.
+   * @default ''
+   */
+  poststart?: string;
+
 }
 
 /**
