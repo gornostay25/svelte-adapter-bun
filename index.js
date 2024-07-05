@@ -95,7 +95,7 @@ export default function (opts = {}) {
 
       writeFileSync(`${out}/package.json`, JSON.stringify(package_data, null, "\t"));
 
-      builder.log.success("Start server with: bun ./build/index.js");
+      builder.log.success(`Start server with: bun ./${out}/index.js`);
     },
   };
 }
