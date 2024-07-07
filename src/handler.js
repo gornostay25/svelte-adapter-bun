@@ -110,7 +110,11 @@ function ssr(request) {
     integrity: request.integrity,
   });
 
-  if (address_header && !request.headers.has(address_header)) {
+  if (
+    address_header &&
+    request.headers.get(host_header) !== "127.0.0.1" &&
+    !request.headers.has(address_header)
+  ) {
     throw new Error(
       `Address header was specified with ${
         ENV_PREFIX + "ADDRESS_HEADER"
@@ -120,7 +124,7 @@ function ssr(request) {
 
   return server.respond(request, {
     getClientAddress() {
-      if (address_header) {
+      if (address_header && request.headers.get(host_header) !== "127.0.0.1") {
         const value = /** @type {string} */ (request.headers.get(address_header)) || "";
 
         if (address_header === "x-forwarded-for") {
