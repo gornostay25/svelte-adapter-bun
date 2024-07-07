@@ -21,6 +21,7 @@ const origin = env("ORIGIN", undefined);
 const address_header = env("ADDRESS_HEADER", "").toLowerCase();
 const protocol_header = env("PROTOCOL_HEADER", "").toLowerCase();
 const host_header = env("HOST_HEADER", "host").toLowerCase();
+const port_header = env("PORT_HEADER", "").toLowerCase();
 
 /** @param {boolean} assets */
 export default function (assets) {
@@ -94,26 +95,26 @@ function serve(path, client = false) {
 
 /**@param {Request} request */
 function ssr(request) {
-  if (origin) {
-    const requestOrigin = get_origin(request.headers);
-    if (origin !== requestOrigin) {
-      const url = request.url.slice(request.url.split("/", 3).join("/").length);
-      request = new Request(origin + url, {
-        method: request.method,
-        headers: request.headers,
-        body: request.body,
-        referrer: request.referrer,
-        referrerPolicy: request.referrerPolicy,
-        mode: request.mode,
-        credentials: request.credentials,
-        cache: request.cache,
-        redirect: request.redirect,
-        integrity: request.integrity,
-      });
-    }
-  }
+  const baseOrigin = origin || get_origin(request.headers);
+  const url = request.url.slice(request.url.split("/", 3).join("/").length);
+  request = new Request(baseOrigin + url, {
+    method: request.method,
+    headers: request.headers,
+    body: request.body,
+    referrer: request.referrer,
+    referrerPolicy: request.referrerPolicy,
+    mode: request.mode,
+    credentials: request.credentials,
+    cache: request.cache,
+    redirect: request.redirect,
+    integrity: request.integrity,
+  });
 
-  if (address_header && !request.headers.has(address_header)) {
+  if (
+    address_header &&
+    request.headers.get(host_header) !== "127.0.0.1" &&
+    !request.headers.has(address_header)
+  ) {
     throw new Error(
       `Address header was specified with ${
         ENV_PREFIX + "ADDRESS_HEADER"
@@ -123,7 +124,7 @@ function ssr(request) {
 
   return server.respond(request, {
     getClientAddress() {
-      if (address_header) {
+      if (address_header && request.headers.get(host_header) !== "127.0.0.1") {
         const value = /** @type {string} */ (request.headers.get(address_header)) || "";
 
         if (address_header === "x-forwarded-for") {
@@ -162,5 +163,10 @@ function ssr(request) {
 function get_origin(headers) {
   const protocol = (protocol_header && headers.get(protocol_header)) || "https";
   const host = headers.get(host_header);
-  return `${protocol}://${host}`;
+  const port = port_header && headers[port_header];
+  if (port) {
+    return `${protocol}://${host}:${port}`;
+  } else {
+    return `${protocol}://${host}`;
+  }
 }

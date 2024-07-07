@@ -6,6 +6,7 @@ const expected = new Set([
   "ADDRESS_HEADER",
   "PROTOCOL_HEADER",
   "HOST_HEADER",
+  "PORT_HEADER",
   "SERVERDEV",
 ]);
 export const build_options = BUILD_OPTIONS;
