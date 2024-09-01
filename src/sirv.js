@@ -91,7 +91,7 @@ function send(req, data) {
   }
 
   if (opts.range) {
-    return new Response(Bun.file(data.abs).slice(opts.start, opts.end), {
+    return new Response(Bun.file(data.abs).slice(opts.start, opts.end + 1), {
       headers: data.headers,
       status: code,
     });
