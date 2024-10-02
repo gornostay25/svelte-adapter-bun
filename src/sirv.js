@@ -55,10 +55,14 @@ function viaLocal(dir, isEtag, uri, extns) {
   }
 }
 
+const notFound = {
+  status: 404,
+};
+
+const notModified = { status: 304 };
+
 function is404(req) {
-  return new Response(null, {
-    status: 404,
-  });
+  return new Response(null, notFound);
 }
 /**
  *
@@ -227,7 +231,7 @@ export default function (dir, opts = {}) {
     if (!data) return next ? next() : isNotFound(req);
 
     if (isEtag && req.headers.get("if-none-match") === data.headers.get("ETag")) {
-      return new Response(null, { status: 304 });
+      return new Response(null, notModified);
     }
 
     data = {
