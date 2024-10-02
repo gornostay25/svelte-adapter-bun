@@ -55,11 +55,14 @@ function viaLocal(dir, isEtag, uri, extns) {
   }
 }
 
+const notFound = {
+  status: 404,
+};
+
+const notModified = { status: 304 };
+
 function is404(req) {
-  return new Response(null, {
-    status: 404,
-    statusText: "404",
-  });
+  return new Response(null, notFound);
 }
 /**
  *
@@ -228,14 +231,14 @@ export default function (dir, opts = {}) {
     if (!data) return next ? next() : isNotFound(req);
 
     if (isEtag && req.headers.get("if-none-match") === data.headers.get("ETag")) {
-      return new Response(null, { status: 304 });
+      return new Response(null, notModified);
     }
 
     data = {
       ...data,
       // clone a new headers to prevent the cached one getting modified
-      headers: new Headers(data.headers)
-    }
+      headers: new Headers(data.headers),
+    };
 
     if (gzips || brots) {
       data.headers.append("Vary", "Accept-Encoding");

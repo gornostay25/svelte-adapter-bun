@@ -55,9 +55,6 @@ interface CompressOptions {
    */
   brotli?: boolean;
 
-  /**
-   * @default html,js,json,css,svg,xml,wasm
-   */
   files?: string[];
 }
 

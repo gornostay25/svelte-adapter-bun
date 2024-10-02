@@ -1,10 +1,21 @@
 {
   "name": "svelte-adapter-bun",
   "version": "0.5.2",
-  "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
+  "author": "Volodymyr Palamar <@gornostay25>",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gornostay25/svelte-adapter-bun.git"
+  },
   "main": "index.js",
-  "types": "index.d.ts",
-  "type": "module",
+  "devDependencies": {
+    "@sveltejs/kit": "^1.30.4",
+    "@types/mime-db": "^1.43.5",
+    "bun-types": "latest",
+    "mime-db": "^1.53.0",
+    "mrmime": "^2.0.0",
+    "prettier": "^3.2.5",
+    "totalist": "^3.0.1"
+  },
   "exports": {
     ".": {
       "types": "./index.d.ts",
@@ -12,40 +23,28 @@
     },
     "./package.json": "./package.json"
   },
+  "bugs": {
+    "url": "https://github.com/gornostay25/svelte-adapter-bun/issues"
+  },
+  "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
   "files": [
     "files",
     "index.d.ts"
   ],
-  "scripts": {
-    "build": "rm -fr files && bun run build.js",
-    "prepare": "bun run build",
-    "lint": "prettier --check .",
-    "format": "prettier --write ."
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/gornostay25/svelte-adapter-bun.git"
-  },
+  "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
   "keywords": [
     "svelte",
     "sveltekit",
     "sveltekit-adapter",
     "bun"
   ],
-  "author": "Volodymyr Palamar <@gornostay25>",
   "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/gornostay25/svelte-adapter-bun/issues"
+  "scripts": {
+    "build": "rm -fr files && bun run build.js",
+    "prepare": "bun run build",
+    "lint": "prettier --check .",
+    "format": "prettier --write ."
   },
-  "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
-  "devDependencies": {
-    "@sveltejs/kit": "^1.30.4",
-    "bun-types": "latest",
-    "mrmime": "^2.0.0",
-    "prettier": "^3.2.5",
-    "totalist": "^3.0.1"
-  },
-  "dependencies": {
-    "tiny-glob": "^0.2.9"
-  }
+  "type": "module",
+  "types": "index.d.ts"
 }
