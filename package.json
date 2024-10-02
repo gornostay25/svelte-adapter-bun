@@ -9,7 +9,9 @@
   "main": "index.js",
   "devDependencies": {
     "@sveltejs/kit": "^1.30.4",
+    "@types/mime-db": "^1.43.5",
     "bun-types": "latest",
+    "mime-db": "^1.53.0",
     "mrmime": "^2.0.0",
     "prettier": "^3.2.5",
     "totalist": "^3.0.1"
