@@ -78,7 +78,7 @@ export default function (opts = {}) {
         scripts: {
           start: "bun ./index.js",
         },
-        dependencies: { cookie: "^1", devalue: "^5", "set-cookie-parser": "^2" },
+        dependencies: { cookie: "^0", devalue: "^5", "set-cookie-parser": "^2" },
       };
 
       try {
