@@ -28,9 +28,9 @@ console.info(`Listening on ${hostname + ":" + port}` + (websocket ? " (Websocket
 const server = serve(serverOptions);
 
 // Gracefully shutdown the server on SIGINT/SIGTERM
-function closeServer() {
+async function closeServer() {
   console.info("Stopping server...");
-  server.stop();
+  await server.stop();
   console.info("Stopped server");
 
   process.removeListener("SIGINT", closeServer);
