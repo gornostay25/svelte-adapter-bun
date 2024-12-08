@@ -1,4 +1,5 @@
 const expected = new Set([
+  "SOCKET_PATH",
   "HOST",
   "PORT",
   "ORIGIN",
