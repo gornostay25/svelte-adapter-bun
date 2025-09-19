@@ -2,8 +2,10 @@ import { getHandler } from 'HANDLER';
 import process from 'process';
 import { env } from 'ENV';
 
-export const hostname = env('HOST', '0.0.0.0');
+export const path = env('SOCKET_PATH', false);
+export const host = env('HOST', '0.0.0.0');
 export const port = env('PORT', '3000');
+
 const body_size_limit = parse_as_bytes(env('BODY_SIZE_LIMIT', '512K'));
 if (isNaN(body_size_limit)) {
   throw new Error(
@@ -12,32 +14,29 @@ if (isNaN(body_size_limit)) {
 }
 
 const idle_timeout = parseInt(env('IDLE_TIMEOUT', '10'));
-
 const { fetch: handlerFetch, websocket } = getHandler();
-const options = {
-  hostname,
-  port,
-  idleTimeout: idle_timeout,
-  bodySizeLimit: body_size_limit,
-  fetch: handlerFetch,
-};
 
-if (websocket) {
-  // @ts-expect-error too many types
-  options.websocket = websocket;
-}
+const options = {
+  idleTimeout: idle_timeout,
+  maxRequestBodySize: body_size_limit,
+  fetch: handlerFetch,
+  ...(path ? { unix: path } : { hostname: host, port: port }),
+  ...(websocket ? { websocket } : {}),
+};
 
 const server = Bun.serve(options);
 
-console.log(`Listening on ${server.url}`);
+console.log(`Listening on ${server.url} ${websocket ? 'with WebSocket' : ''}`);
 
 async function graceful_shutdown(reason: 'SIGINT' | 'SIGTERM' | 'IDLE') {
-  console.log('Shutting down...');
-  await server.stop(true).then(() => {
-    // @ts-expect-error custom events cannot be typed
-    process.emit('sveltekit:shutdown', reason);
-  });
-  process.exit(0);
+  console.info('Stopping server...');
+  // @ts-expect-error custom events cannot be typed
+  process.emit('sveltekit:shutdown', reason);
+  await server.stop(true);
+  console.info('Stopped server');
+
+  process.removeListener('SIGINT', graceful_shutdown);
+  process.removeListener('SIGTERM', graceful_shutdown);
 }
 
 process.on('SIGTERM', graceful_shutdown);

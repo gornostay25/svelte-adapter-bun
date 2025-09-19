@@ -7,16 +7,18 @@ import { existsSync } from 'fs';
 import type { RequestHandler } from 'sirv';
 import sirv from 'sirv';
 
-const server = new Server(manifest) as SvelteKitServer & { websocket: {} };
+const server = new Server(manifest) as SvelteKitServer & {
+  websocket(): unknown;
+};
 
 const { serveAssets } = BUILD_OPTIONS;
 
-// const origin = env('ORIGIN', undefined);
+const origin = env('ORIGIN', undefined);
 const xff_depth = parseInt(env('XFF_DEPTH', '1'));
 const address_header = env('ADDRESS_HEADER', '').toLowerCase();
-// const protocol_header = env('PROTOCOL_HEADER', '').toLowerCase();
-// const host_header = env('HOST_HEADER', '').toLowerCase();
-// const port_header = env('PORT_HEADER', '').toLowerCase();
+const protocol_header = env('PROTOCOL_HEADER', '').toLowerCase();
+const host_header = env('HOST_HEADER', '').toLowerCase();
+const port_header = env('PORT_HEADER', '').toLowerCase();
 
 const asset_dir = `${import.meta.dir}/client${base}`;
 
@@ -73,11 +75,12 @@ function serve_prerendered(): RequestHandler {
 }
 
 const ssr = async (request: Request, bunServer: Bun.Server) => {
-  // const baseOrigin = origin || get_origin(request.headers);
-  // const url = request.url.slice(request.url.split("/", 3).join("/").length);
+  const baseOrigin = origin || get_origin(request.headers);
+  const url = request.url.slice(request.url.split('/', 3).join('/').length);
+  const newRequest = new Request(baseOrigin + url, request);
 
-  return server.respond(request, {
-    platform: { server: bunServer },
+  return server.respond(newRequest, {
+    platform: { server: bunServer, request },
     getClientAddress() {
       if (address_header) {
         if (!request.headers.has(address_header)) {
@@ -118,7 +121,7 @@ const ssr = async (request: Request, bunServer: Bun.Server) => {
 };
 
 export const getHandler = () => {
-  const websocket = server.websocket;
+  const websocket = server.websocket();
 
   const staticHandlers = [
     serveAssets && serve(`${import.meta.dir}/client${base}`, true),
@@ -143,10 +146,10 @@ export const getHandler = () => {
   };
 };
 
-// function get_origin(headers: Headers) {
-//     const protocol = (protocol_header && headers.get(protocol_header)) || 'https';
-//     const host = (host_header && headers.get(host_header)) || headers.get('host');
-//     const port = port_header && headers.get(port_header);
+function get_origin(headers: Headers) {
+  const protocol = (protocol_header && headers.get(protocol_header)) || 'https';
+  const host = (host_header && headers.get(host_header)) || headers.get('host');
+  const port = port_header && headers.get(port_header);
 
-//     return port ? `${protocol}://${host}:${port}` : `${protocol}://${host}`;
-// }
+  return port ? `${protocol}://${host}:${port}` : `${protocol}://${host}`;
+}

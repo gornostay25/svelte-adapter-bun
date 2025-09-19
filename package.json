@@ -24,7 +24,7 @@
   },
   "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
   "scripts": {
-    "prepare": "husky",
+    "prepare": "husky || echo ''",
     "build": "bun run scripts/build.ts",
     "format": "prettier --write ."
   },

@@ -106,7 +106,6 @@ export default function (options: AdapterOptions = {}): Adapter {
 
       await patchServerWebsocketHandler(`${out}/server/index.js`);
 
-      builder.log.warn(`Copying files from ${files} to ${out}`);
       builder.copy(files, out, {
         replace: {
           ENV: './env.js',
@@ -148,13 +147,10 @@ async function patchServerWebsocketHandler(path: string) {
       '$1$3websocket: $2.websocket || null,'
     )
     .replace(/(async function get_hooks\(\) {)/, '$1let websocket;')
-    .replace(
-      /(} = await Promise\.resolve\(\)\.then\(\(\) => \(init_hooks_server\(\),)((.|\s)*?{)/,
-      ',websocket$1$2websocket,'
-    )
+    .replace(/(\({handle,)((.|\s)*?{)/, '$1websocket,$2websocket,')
     .replace(
       /(async init\({ env, read }\) {)/,
-      'get websocket() {return this.#options.websocket}\n$1'
+      'websocket() {return this.#options.hooks.websocket}\n$1'
     );
 
   Bun.write(path, result);
