@@ -1,0 +1,8 @@
+# syntax=docker/dockerfile:1
+ARG NGINX_VERSION=1.29.1
+
+FROM nginx:${NGINX_VERSION}-alpine-slim
+
+# Set timezone to Europe/Podgorica
+ENV TZ=Europe/Podgorica
+RUN apk add --no-cache tzdata
