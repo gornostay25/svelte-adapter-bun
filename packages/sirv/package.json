@@ -1,0 +1,23 @@
+{
+  "name": "sirv",
+  "version": "3.0.2",
+  "module": "./src/index.ts",
+  "private": true,
+  "type": "module",
+  "author": {
+    "name": "Luke Edwards",
+    "email": "luke@lukeed.com",
+    "url": "https://lukeed.com"
+  },
+  "license": "MIT",
+  "devDependencies": {
+    "@types/bun": "latest"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  },
+  "dependencies": {
+    "mrmime": "^2.0.1",
+    "totalist": "^3.0.1"
+  }
+}

@@ -8,7 +8,7 @@ Install with `bun add -d svelte-adapter-bun`, then add the adapter to your `svel
 
 ```js
 // svelte.config.js
-import adapter from "svelte-adapter-bun";
+import adapter from 'svelte-adapter-bun';
 
 export default {
   kit: {
@@ -24,7 +24,7 @@ After building the server (`vite build`), use the following command to start:
 cd build/
 
 # run Bun
-bun run start
+bun run ./index.js
 ```
 
 ## :gear: Options
@@ -33,22 +33,14 @@ The adapter can be configured with various options:
 
 ```js
 // svelte.config.js
-import adapter from "svelte-adapter-bun";
+import adapter from 'svelte-adapter-bun';
 export default {
   kit: {
     adapter: adapter({
-      out: "build",
-      assets: true,
-      envPrefix: "MY_CUSTOM_",
-      development: true,
-      // precompress: true,
-      precompress: {
-        brotli: true,
-        gzip: true,
-        files: ["htm", "html"],
-      },
-      dynamic_origin: true,
-      xff_depth: 1,
+      out: 'build',
+      serveAssets: true,
+      envPrefix: 'MY_CUSTOM_',
+      precompress: true,
     }),
   },
 };
@@ -56,36 +48,24 @@ export default {
 
 ### out
 
-The directory to build the server to. It defaults to `build` — i.e. `bun run start` would start the server locally after it has been created.
+The directory to build the server to. It defaults to `build` — i.e. `bun run ./index.js` would start the server locally after it has been created.
 
-### assets
+### serveAssets
 
-Browse a static assets. Default: `true`
+Serve static assets. Default: `true`
 
 - [x] Support [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests)
 
 ### precompress
 
-Enables precompressing using gzip and brotli for assets and prerendered pages. It defaults to `false`.
-
-#### brotli
-
-Enable brotli precompressing. It defaults to `false`.
-
-#### gzip
-
-Enable gzip precompressing. It defaults to `false`.
-
-#### files
-
-file extensions to compress.It defaults to `['html','js','json','css','svg','xml','wasm']`.
+Enables precompressing using gzip and brotli for assets and prerendered pages. It defaults to `true`.
 
 ### envPrefix
 
 If you need to change the name of the environment variables used to configure the deployment (for example, to deconflict with environment variables you don't control), you can specify a prefix:
 
 ```js
-envPrefix: "MY_CUSTOM_";
+envPrefix: 'MY_CUSTOM_';
 ```
 
 ```
@@ -94,18 +74,6 @@ MY_CUSTOM_PORT=4000 \
 MY_CUSTOM_ORIGIN=https://my.site \
 bun build/index.js
 ```
-
-### development
-
-This enables bun's error page. Default: `false`
-
-### dynamic_origin
-
-If enabled use `PROTOCOL_HEADER` `HOST_HEADER` like origin. Default: `false`
-
-### xff_depth
-
-The default value of XFF_DEPTH if environment is not set. Default: `1`
 
 ## :spider_web: WebSocket Server
 
@@ -117,8 +85,8 @@ https://bun.sh/docs/api/websockets
 /** @type {import("svelte-adapter-bun").WebSocketHandler} */
 export const handleWebsocket = {
   open(ws) {
-    console.log("WebSocket opened");
-    ws.send("Slava Ukraїni");
+    console.log('WebSocket opened');
+    ws.send('Slava Ukraїni');
   },
   /**
    * @param {Request} request
@@ -126,26 +94,10 @@ export const handleWebsocket = {
    */
   upgrade(request, upgrade) {
     const url = new URL(request.url);
-    if (url.pathname.startsWith("/ws")) {
+    if (url.pathname.startsWith('/ws')) {
       return upgrade(request);
     }
   },
-};
-```
-
-## Polyfills
-
-If you need to use polyfills in your app, you can add them to the [`src/polyfills.js`](src/polyfills.js) file:
-
-```js
-class Polifill {
-  constructor() {
-    ...
-  }
-}
-
-const globals = {
-  Polifill,
 };
 ```
 
