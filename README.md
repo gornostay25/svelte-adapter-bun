@@ -8,7 +8,7 @@ Install with `bun add -d svelte-adapter-bun`, then add the adapter to your `svel
 
 ```js
 // svelte.config.js
-import adapter from "svelte-adapter-bun";
+import adapter from 'svelte-adapter-bun';
 
 export default {
   kit: {
@@ -24,7 +24,7 @@ After building the server (`vite build`), use the following command to start:
 cd build/
 
 # run Bun
-bun run start
+bun run ./index.js
 ```
 
 ## :gear: Options
@@ -33,22 +33,14 @@ The adapter can be configured with various options:
 
 ```js
 // svelte.config.js
-import adapter from "svelte-adapter-bun";
+import adapter from 'svelte-adapter-bun';
 export default {
   kit: {
     adapter: adapter({
-      out: "build",
-      assets: true,
-      envPrefix: "MY_CUSTOM_",
-      development: true,
-      // precompress: true,
-      precompress: {
-        brotli: true,
-        gzip: true,
-        files: ["htm", "html"],
-      },
-      dynamic_origin: true,
-      xff_depth: 1,
+      out: 'build',
+      serveAssets: true,
+      envPrefix: 'MY_CUSTOM_',
+      precompress: true,
     }),
   },
 };
@@ -56,36 +48,24 @@ export default {
 
 ### out
 
-The directory to build the server to. It defaults to `build` — i.e. `bun run start` would start the server locally after it has been created.
+The directory to build the server to. It defaults to `build` — i.e. `bun run ./index.js` would start the server locally after it has been created.
 
-### assets
+### serveAssets
 
-Browse a static assets. Default: `true`
+Serve static assets. Default: `true`
 
 - [x] Support [HTTP range requests](https://developer.mozilla.org/en-US/docs/Web/HTTP/Range_requests)
 
 ### precompress
 
-Enables precompressing using gzip and brotli for assets and prerendered pages. It defaults to `false`.
-
-#### brotli
-
-Enable brotli precompressing. It defaults to `false`.
-
-#### gzip
-
-Enable gzip precompressing. It defaults to `false`.
-
-#### files
-
-file extensions to compress.It defaults to `['html','js','json','css','svg','xml','wasm']`.
+Enables precompressing using gzip and brotli for assets and prerendered pages. It defaults to `true`.
 
 ### envPrefix
 
 If you need to change the name of the environment variables used to configure the deployment (for example, to deconflict with environment variables you don't control), you can specify a prefix:
 
 ```js
-envPrefix: "MY_CUSTOM_";
+envPrefix: 'MY_CUSTOM_';
 ```
 
 ```
@@ -95,59 +75,49 @@ MY_CUSTOM_ORIGIN=https://my.site \
 bun build/index.js
 ```
 
-### development
-
-This enables bun's error page. Default: `false`
-
-### dynamic_origin
-
-If enabled use `PROTOCOL_HEADER` `HOST_HEADER` like origin. Default: `false`
-
-### xff_depth
-
-The default value of XFF_DEPTH if environment is not set. Default: `1`
-
 ## :spider_web: WebSocket Server
 
 https://bun.sh/docs/api/websockets
 
-```js
-// hooks.server.js
+The server supports WebSocket connections. To enable them, you need to add a `websocket` hook to server hooks.
 
-/** @type {import("svelte-adapter-bun").WebSocketHandler} */
-export const handleWebsocket = {
-  open(ws) {
-    console.log("WebSocket opened");
-    ws.send("Slava Ukraїni");
-  },
-  /**
-   * @param {Request} request
-   * @param {Function} upgrade
-   */
-  upgrade(request, upgrade) {
-    const url = new URL(request.url);
-    if (url.pathname.startsWith("/ws")) {
-      return upgrade(request);
-    }
-  },
-};
-```
+```ts
+// hooks.server.ts
+import type { Handle } from '@sveltejs/kit';
 
-## Polyfills
+export const handle: Handle = async ({ event, resolve }) => {
+  const { request } = event;
+  const url = new URL(request.url);
 
-If you need to use polyfills in your app, you can add them to the [`src/polyfills.js`](src/polyfills.js) file:
-
-```js
-class Polifill {
-  constructor() {
-    ...
+  // Check for WebSocket upgrade request
+  if (
+    request.headers.get('connection')?.toLowerCase().includes('upgrade') &&
+    request.headers.get('upgrade')?.toLowerCase() === 'websocket' &&
+    url.pathname.startsWith('/ws')
+  ) {
+    await event.platform.server.upgrade(event.platform.request);
+    return new Response(null, { status: 101 });
   }
-}
 
-const globals = {
-  Polifill,
+  return resolve(event);
+};
+
+export const websocket: Bun.WebSocketHandler<undefined> = {
+  async open(ws) {
+    console.log('WebSocket opened');
+    ws.send('Slava Ukraїni');
+  },
+  message(ws, message) {
+    console.log('WebSocket message received');
+    ws.send(message);
+  },
+  close(ws) {
+    console.log('WebSocket closed');
+  },
 };
 ```
+
+For detailed documentation, examples, and advanced usage patterns, visit the [WebSocket example README](examples/websocket/README.md).
 
 ## :desktop_computer: Environment variables
 
@@ -160,6 +130,16 @@ By default, the server will accept connections on `0.0.0.0` using port 3000. The
 ```
 HOST=127.0.0.1 PORT=4000 bun build/index.js
 ```
+
+### `SOCKET_PATH`
+
+Instead of using TCP/IP connections, you can configure the server to listen on a Unix domain socket by setting the `SOCKET_PATH` environment variable:
+
+```
+SOCKET_PATH=/tmp/sveltekit.sock bun build/index.js
+```
+
+When `SOCKET_PATH` is set, the server will ignore the `HOST` and `PORT` settings and use the Unix socket instead. This is useful for deployment behind reverse proxies like nginx.
 
 ### `ORIGIN`, `PROTOCOL_HEADER` and `HOST_HEADER`
 

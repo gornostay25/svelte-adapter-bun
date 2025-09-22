@@ -1,51 +1,64 @@
 {
   "name": "svelte-adapter-bun",
-  "version": "0.5.2",
+  "version": "1.0.0",
   "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
-  "main": "index.js",
-  "types": "index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "types": "./index.d.ts",
-      "import": "./index.js"
-    },
-    "./package.json": "./package.json"
-  },
-  "files": [
-    "files",
-    "index.d.ts"
+  "keywords": [
+    "adapter",
+    "deploy",
+    "svelte",
+    "sveltekit",
+    "bun"
   ],
-  "scripts": {
-    "build": "rm -fr files && bun run build.js",
-    "prepare": "bun run build",
-    "lint": "prettier --check .",
-    "format": "prettier --write ."
+  "author": {
+    "name": "Volodymyr Palamar",
+    "url": "https://gornostay25.dev",
+    "email": "me@gornostay25.dev"
   },
+  "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/gornostay25/svelte-adapter-bun.git"
   },
-  "keywords": [
-    "svelte",
-    "sveltekit",
-    "sveltekit-adapter",
-    "bun"
-  ],
-  "author": "Volodymyr Palamar <@gornostay25>",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/gornostay25/svelte-adapter-bun/issues"
   },
   "homepage": "https://github.com/gornostay25/svelte-adapter-bun#readme",
+  "scripts": {
+    "prepare": "husky || echo ''",
+    "build": "bun run scripts/build.ts",
+    "format": "prettier --write ."
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "types": "./index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "types": "index.d.ts",
+  "files": [
+    "dist",
+    "index.d.ts",
+    "ambient.d.ts"
+  ],
   "devDependencies": {
-    "@sveltejs/kit": "^1.30.4",
-    "bun-types": "latest",
-    "mrmime": "^2.0.0",
-    "prettier": "^3.2.5",
-    "totalist": "^3.0.1"
+    "@types/bun": "latest",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.1.6",
+    "prettier": "3.6.2",
+    "sirv": "file:packages/sirv"
+  },
+  "peerDependencies": {
+    "typescript": "^5",
+    "@sveltejs/kit": "^2.4.0"
   },
   "dependencies": {
-    "tiny-glob": "^0.2.9"
+    "rolldown": "^1.0.0-beta.38"
+  },
+  "lint-staged": {
+    "*.{js,jsx,ts,tsx,json,css,md}": [
+      "prettier --write"
+    ]
   }
 }

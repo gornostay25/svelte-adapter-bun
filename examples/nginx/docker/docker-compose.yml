@@ -1,0 +1,43 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.app
+    container_name: app
+    # ports:
+    #   - "3001:3000"
+    volumes:
+      # Mount the client folder from app container to nginx
+      - app-static:/home/bun/public
+    environment:
+      - ORIGIN=https://app.localhost
+    networks:
+      - app-network
+  nginx:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.nginx
+    container_name: nginx-proxy
+    restart: always
+    ports:
+      - '80:80'
+    volumes:
+      # Mount nginx configuration
+      - ./docker/nginx.conf:/etc/nginx/nginx.conf:ro
+      # Mount client folder
+      - app-static:/var/www/app:ro
+
+    environment:
+      - NGINX_ENTRYPOINT_QUIET_LOGS=1
+    networks:
+      - app-network
+    depends_on:
+      - app
+
+volumes:
+  app-static:
+    driver: local
+
+networks:
+  app-network:
+    driver: bridge
