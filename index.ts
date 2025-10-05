@@ -147,7 +147,7 @@ async function patchServerWebsocketHandler(path: string) {
       '$1$3websocket: $2.websocket || null,'
     )
     .replace(/(async function get_hooks\(\) {)/, '$1let websocket;')
-    .replace(/(\({handle,)((.|\s)*?{)/, '$1websocket,$2websocket,')
+    .replace(/(\({handle,)((.|\s)*?return {)/, '$1websocket,$2websocket,')
     .replace(
       /(async init\({ env, read }\) {)/,
       'websocket() {return this.#options.hooks.websocket}\n$1'
