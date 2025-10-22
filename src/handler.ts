@@ -3,7 +3,7 @@ import { manifest, base, prerendered } from 'MANIFEST';
 import { Server } from 'SERVER';
 import { env } from 'ENV';
 import type { Server as SvelteKitServer } from '@sveltejs/kit';
-import { existsSync } from 'fs';
+import { existsSync } from 'node:fs';
 import type { RequestHandler } from 'sirv';
 import sirv from 'sirv';
 
@@ -14,7 +14,7 @@ const server = new Server(manifest) as SvelteKitServer & {
 const { serveAssets } = BUILD_OPTIONS;
 
 const origin = env('ORIGIN', undefined);
-const xff_depth = parseInt(env('XFF_DEPTH', '1'));
+const xff_depth = parseInt(env('XFF_DEPTH', '1'), 10);
 const address_header = env('ADDRESS_HEADER', '').toLowerCase();
 const protocol_header = env('PROTOCOL_HEADER', '').toLowerCase();
 const host_header = env('HOST_HEADER', '').toLowerCase();

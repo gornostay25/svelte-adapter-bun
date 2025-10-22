@@ -43,7 +43,7 @@ function toAssume(uri: string, extns: string[]) {
     uri = uri.substring(0, len);
   }
 
-  let arr = [],
+  const arr = [],
     tmp = `${uri}/index`;
   for (; i < extns.length; i++) {
     x = extns[i] ? `.${extns[i]}` : '';
@@ -97,14 +97,14 @@ function send(
   data: { abs: string; stats: Stats; headers: Headers }
 ) {
   let code = 200;
-  let opts: { end: number; start: number } = { end: 0, start: 0 };
+  const opts: { end: number; start: number } = { end: 0, start: 0 };
 
   if (req.headers.has('range')) {
     code = 206;
-    let [x, y] = req.headers.get('range')!.replace('bytes=', '').split('-');
+    const [x, y] = req.headers.get('range')!.replace('bytes=', '').split('-');
     if (x !== undefined && y !== undefined) {
       let end = (opts.end = parseInt(y, 10) || data.stats.size - 1);
-      let start = (opts.start = parseInt(x, 10) || 0);
+      const start = (opts.start = parseInt(x, 10) || 0);
 
       if (end >= data.stats.size) {
         end = data.stats.size - 1;
@@ -144,12 +144,12 @@ const ENCODING: Record<string, string> = {
 };
 
 function toHeaders(name: string, stats: Stats, isEtag: boolean) {
-  let enc = ENCODING[name.slice(-3)];
+  const enc = ENCODING[name.slice(-3)];
 
   let ctype = lookup(name.slice(0, enc ? -3 : undefined)) || '';
   if (ctype === 'text/html') ctype += ';charset=utf-8';
 
-  let headers = new Headers({
+  const headers = new Headers({
     'Content-Length': stats.size.toString(),
     'Content-Type': ctype,
     'Last-Modified': stats.mtime.toUTCString(),
@@ -164,25 +164,25 @@ function toHeaders(name: string, stats: Stats, isEtag: boolean) {
 export default function (dir: string, opts: Options = {}): RequestHandler {
   dir = resolve(dir || '.');
 
-  let isNotFound = opts.onNoMatch || is404;
-  let setHeaders = opts.setHeaders;
+  const isNotFound = opts.onNoMatch || is404;
+  const setHeaders = opts.setHeaders;
 
-  let extensions = opts.extensions || ['html', 'htm'];
-  let gzips = opts.gzip && extensions.map(x => `${x}.gz`).concat('gz');
-  let brots = opts.brotli && extensions.map(x => `${x}.br`).concat('br');
+  const extensions = opts.extensions || ['html', 'htm'];
+  const gzips = opts.gzip && extensions.map(x => `${x}.gz`).concat('gz');
+  const brots = opts.brotli && extensions.map(x => `${x}.br`).concat('br');
 
   const FILES: Record<string, { abs: string; stats: Stats; headers: Headers }> =
     {};
 
-  let fallback = '/';
-  let isEtag = !!opts.etag;
+  const fallback = '/';
+  const isEtag = !!opts.etag;
   // let isSPA = !!opts.single;
   // if (typeof opts.single === 'string') {
   //     let idx = opts.single.lastIndexOf('.');
   //     fallback += !!~idx ? opts.single.substring(0, idx) : opts.single;
   // }
 
-  let ignores: RegExp[] = [];
+  const ignores: RegExp[] = [];
   if (opts.ignores !== false) {
     ignores.push(/[/]([A-Za-z\s\d~$._-]+\.\w+){1,}$/); // any extn
     if (opts.dotfiles) {
@@ -205,11 +205,11 @@ export default function (dir: string, opts: Options = {}): RequestHandler {
 
   // if (!opts.dev) {
   totalist(dir, (name, abs, stats) => {
-    if (/\.well-known[\\+\/]/.test(name)) {
+    if (/\.well-known[\\+/]/.test(name)) {
     } // keep
-    else if (!opts.dotfiles && /(^\.|[\\+|\/+]\.)/.test(name)) return;
+    else if (!opts.dotfiles && /(^\.|[\\+|/+]\.)/.test(name)) return;
 
-    let headers = toHeaders(name, stats, isEtag);
+    const headers = toHeaders(name, stats, isEtag);
     if (CacheControl) headers.set('Cache-Control', CacheControl);
 
     FILES['/' + name.normalize().replace(/\\+/g, '/')] = {
@@ -220,16 +220,16 @@ export default function (dir: string, opts: Options = {}): RequestHandler {
   });
   // }
 
-  let lookup =
+  const lookup =
     /*opts.dev ? viaLocal.bind(0, dir + sep, isEtag) :*/ viaCache.bind(
       0,
       FILES
     );
 
-  return function (req, next) {
-    let extns = [''];
+  return (req, next) => {
+    const extns = [''];
     let pathname = new URL(req.url).pathname;
-    let val = req.headers.get('accept-encoding') || '';
+    const val = req.headers.get('accept-encoding') || '';
     if (gzips && val.includes('gzip')) extns.unshift(...gzips);
     if (brots && /(br|brotli)/i.test(val)) extns.unshift(...brots);
     extns.push(...extensions); // [...br, ...gz, orig, ...exts]

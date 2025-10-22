@@ -1,19 +1,19 @@
-import { getHandler } from 'HANDLER';
-import process from 'process';
 import { env } from 'ENV';
+import { getHandler } from 'HANDLER';
+import process from 'node:process';
 
 export const path = env('SOCKET_PATH', false);
 export const host = env('HOST', '0.0.0.0');
 export const port = env('PORT', '3000');
 
 const body_size_limit = parse_as_bytes(env('BODY_SIZE_LIMIT', '512K'));
-if (isNaN(body_size_limit)) {
+if (Number.isNaN(body_size_limit)) {
   throw new Error(
     `Invalid BODY_SIZE_LIMIT: '${env('BODY_SIZE_LIMIT')}'. Please provide a numeric value.`
   );
 }
 
-const idle_timeout = parseInt(env('IDLE_TIMEOUT', '10'));
+const idle_timeout = parseInt(env('IDLE_TIMEOUT', '10'), 10);
 const { fetch: handlerFetch, websocket } = getHandler();
 
 const options = {
@@ -59,5 +59,5 @@ function parse_as_bytes(value: string): number {
       M: 1024 * 1024,
       G: 1024 * 1024 * 1024,
     }[units ?? 'B'] ?? 1;
-  return Number(multiplier != 1 ? value.slice(0, -1) : value) * multiplier;
+  return Number(multiplier !== 1 ? value.slice(0, -1) : value) * multiplier;
 }
