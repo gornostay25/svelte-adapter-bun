@@ -1,5 +1,4 @@
 import type { Adapter, Builder } from '@sveltejs/kit';
-import { readFileSync, writeFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { rolldown } from 'rolldown';
 
@@ -47,8 +46,7 @@ export default function (options: AdapterOptions = {}): Adapter {
 
       builder.writeServer(tmp);
 
-      writeFileSync(
-        `${tmp}/manifest.js`,
+      await Bun.file(`${tmp}/manifest.js`).write(
         [
           `export const manifest = ${builder.generateManifest({ relativePath: './' })};`,
           `export const prerendered = new Set(${JSON.stringify(builder.prerendered.paths)});`,
@@ -56,7 +54,9 @@ export default function (options: AdapterOptions = {}): Adapter {
         ].join('\n\n')
       );
 
-      const pkg = JSON.parse(readFileSync('package.json', 'utf-8'));
+      const pkg = JSON.parse(
+        await Bun.file('package.json', { type: 'utf-8' }).text()
+      );
 
       const entrypoints: Record<string, string> = {
         index: `${tmp}/index.js`,
@@ -140,7 +140,7 @@ export default function (options: AdapterOptions = {}): Adapter {
  * Patch sveltekit server to return the websocket handler
  */
 async function patchServerWebsocketHandler(path: string) {
-  const content = readFileSync(path, 'utf-8');
+  const content = await Bun.file(path, { type: 'utf-8' }).text();
 
   const result = content
     .replace(
@@ -154,5 +154,5 @@ async function patchServerWebsocketHandler(path: string) {
       'websocket() {return this.#options.hooks.websocket}\n$1'
     );
 
-  writeFileSync(path, result);
+  await Bun.file(path).write(result);
 }

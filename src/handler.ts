@@ -3,8 +3,7 @@ import { manifest, base, prerendered } from 'MANIFEST';
 import { Server } from 'SERVER';
 import { env } from 'ENV';
 import type { Server as SvelteKitServer } from '@sveltejs/kit';
-import { existsSync } from 'node:fs';
-import type { RequestHandler } from 'sirv';
+import type { RequestHandler, NextHandler } from 'sirv';
 import sirv from 'sirv';
 
 const server = new Server(manifest) as SvelteKitServer & {
@@ -27,14 +26,17 @@ await server.init({
   read: file => Bun.file(`${asset_dir}/${file}`).stream(),
 });
 
-function serve(path: string, client: boolean = false) {
-  if (existsSync(path)) {
+async function serve(
+  path: string,
+  client: boolean = false
+): Promise<RequestHandler> {
+  if (await Bun.file(path).exists()) {
     return sirv(path, {
       etag: true,
       gzip: true,
       brotli: true,
       setHeaders: client
-        ? (headers, pathname) => {
+        ? (headers: Map<string, string>, pathname: string) => {
             if (pathname.startsWith(`/${manifest.appDir}/immutable/`)) {
               headers.set('cache-control', 'public,max-age=31536000,immutable');
             }
@@ -46,10 +48,10 @@ function serve(path: string, client: boolean = false) {
 }
 
 // required because the static file server ignores trailing slashes
-function serve_prerendered(): RequestHandler {
-  const handler = serve(`${import.meta.dir}/prerendered`, false)!;
+async function serve_prerendered(): Promise<RequestHandler> {
+  const handler = await serve(`${import.meta.dir}/prerendered`, false);
 
-  return (req, next) => {
+  return (req: Request, next: NextHandler) => {
     let { pathname, search } = new URL(req.url);
 
     try {
