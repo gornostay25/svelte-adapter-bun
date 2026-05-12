@@ -97,8 +97,8 @@ export default function (options: AdapterOptions = {}): Adapter {
           // Node.js built-in modules (with and without the `node:` prefix)
           /^node:/,
           ...builtinModules.map(m => new RegExp(`^${m}(\\/.*)?$`)),
-          // Bun runtime
-          /^bun$/,
+          // Bun runtime (e.g. `bun`, `bun:sqlite`, `bun:test`)
+          /^bun(:.*)?$/,
         ],
       });
 
