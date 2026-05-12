@@ -87,13 +87,17 @@ export default function (options: AdapterOptions = {}): Adapter {
       // 	process.exit(1);
       // }
 
+      const declaredDependencies = [
+        ...Object.keys(pkg.dependencies || {}),
+        ...Object.keys(pkg.peerDependencies || {}),
+        ...Object.keys(pkg.optionalDependencies || {}),
+      ];
+
       const bundle = await rolldown({
         input: entrypoints,
         external: [
           // dependencies could have deep exports, so we need a regex
-          ...Object.keys(pkg.dependencies || {}).map(
-            d => new RegExp(`^${d}(\\/.*)?$`)
-          ),
+          ...declaredDependencies.map(d => new RegExp(`^${d}(\\/.*)?$`)),
           // Node.js built-in modules (with and without the `node:` prefix)
           /^node:/,
           ...builtinModules.map(m => new RegExp(`^${m}(\\/.*)?$`)),
