@@ -33,14 +33,18 @@ function serve(path: string, client: boolean = false) {
       etag: true,
       gzip: true,
       brotli: true,
-      setHeaders: client
-        ? (headers, pathname) => {
-            if (pathname.startsWith(`/${manifest.appDir}/immutable/`)) {
-              headers.set('cache-control', 'public,max-age=31536000,immutable');
-            }
-            return headers;
+      setHeaders: (headers, pathname) => {
+        if (!headers.get('content-type')) {
+          const type = Bun.file(`${path}${pathname}`).type;
+          if (type && !type.startsWith('application/octet-stream')) {
+            headers.set('content-type', type);
           }
-        : undefined,
+        }
+        if (client && pathname.startsWith(`/${manifest.appDir}/immutable/`)) {
+          headers.set('cache-control', 'public,max-age=31536000,immutable');
+        }
+        return headers;
+      },
     });
   }
 }
