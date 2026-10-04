@@ -1,5 +1,12 @@
 # svelte-adapter-bun
 
+> [!IMPORTANT]
+> ### ⚠️ Status Notice: Official Adapter Released for SvelteKit 3+
+> With the launch of **SvelteKit 3**, the Svelte core team officially introduced first-party Bun support via [`@sveltejs/adapter-bun`](https://svelte.dev/docs/kit/adapter-bun) (merged in [sveltejs/kit#16695](https://github.com/sveltejs/kit/pull/16695)).
+>
+> - **For SvelteKit 3+ and Bun 1.4+:** It is strongly recommended to use the official first-party [`@sveltejs/adapter-bun`](https://svelte.dev/docs/kit/adapter-bun).
+> - **For Legacy Projects (SvelteKit 1.x & 2.x):** This repository (`svelte-adapter-bun`) remains available, fully functional, and maintained for backwards compatibility.
+
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
 ## :zap: Usage
