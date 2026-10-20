@@ -1,5 +1,17 @@
 # svelte-adapter-bun
 
+> **Deprecated — unmaintained.** Use the official [`@sveltejs/adapter-bun`](https://www.npmjs.com/package/@sveltejs/adapter-bun) instead. Documentation: [Bun servers](https://svelte.dev/docs/kit/adapter-bun). This repository is archived; there will be no further updates.
+
+## Migration
+
+1. Remove this package and install the official adapter: `bun add -d @sveltejs/adapter-bun`
+2. Change your import from `svelte-adapter-bun` to `@sveltejs/adapter-bun`
+3. Follow the [official Bun adapter docs](https://svelte.dev/docs/kit/adapter-bun) for build and run commands (`bun run --bun build`, `bun ./build`, etc.)
+
+Option names and defaults may differ from this package (for example, there is no `serveAssets` option on the official adapter). The examples in this repo are kept for historical reference only.
+
+---
+
 [Adapter](https://kit.svelte.dev/docs/adapters) for SvelteKit apps that generates a standalone [Bun](https://github.com/oven-sh/bun) server.
 
 ## :zap: Usage

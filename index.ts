@@ -12,7 +12,12 @@ interface AdapterOptions {
 
 const files = fileURLToPath(new URL('./files', import.meta.url).href);
 
+const DEPRECATION_URL = 'https://svelte.dev/docs/kit/adapter-bun';
+
 export default function (options: AdapterOptions = {}): Adapter {
+  console.warn(
+    `[svelte-adapter-bun] This package is deprecated and unmaintained. Use @sveltejs/adapter-bun instead: ${DEPRECATION_URL}`
+  );
   const {
     out = 'build',
     precompress = true,

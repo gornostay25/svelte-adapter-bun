@@ -1,7 +1,7 @@
 {
   "name": "svelte-adapter-bun",
-  "version": "1.0.1",
-  "description": "Adapter for SvelteKit apps that generates a standalone Bun.js server.",
+  "version": "1.0.2",
+  "description": "DEPRECATED: use @sveltejs/adapter-bun. Adapter for SvelteKit apps that generates a standalone Bun.js server.",
   "keywords": [
     "adapter",
     "deploy",
